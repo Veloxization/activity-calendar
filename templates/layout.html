@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Activity Calendar - {% block title %} {% endblock % }</title>
+        <link rel="stylesheet" type="text/css" href="/css/style.css">
+    </head>
+    <body>
+        <div id="navbar">
+            <a href="/">Home</a>
+            {% if session.username %}
+            <a href="/tasks/{{ session.username }}">Activites</a>
+            <a href="/inbox/{{ session.username }}">Inbox</a>
+            <a href="/logout">Log Out</a>
+            {% else %}
+            <a href="/login">Log In</a>
+            <a href="/signup">Sign Up</a>
+            {% endif %}
+        </div>
+        {% block content %} {% endblock %}
+        <hr/>
+        <div id="footer">
+            <span class="footer-element">2022 Veloxization</span>
+            <span class="footer-element"><a href="https://github.com/Veloxization/activity-calendar">Source Code</a></span>
+        </div>
+    </body>
+</html>
