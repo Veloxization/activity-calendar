@@ -17,3 +17,11 @@ def login():
 @app.route("/signup")
 def signup():
     return render_template("signup.html")
+
+@app.route("/login/post", methods=["POST"])
+def loginPost():
+    return redirect("/")
+
+@app.route("/signup/post", methods=["POST"])
+def signupPost():
+    return redirect("/")
