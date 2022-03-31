@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block title %}Log In{% endblock %}
+{% block content %}
+<div id="login-box">
+    <div id="login-content">
+        <h1>Log into your Activity Calendar</h1>
+        <form action="/login" method="POST">
+            <p>Username<br/>
+            <input type="text" name="username"></p>
+            <p>Password<br/>
+            <input type="password" name="password"></p>
+            <input type="submit" value="Log In">
+        </form>
+        <p>No account? <a href="/signup">Sign Up now!</a></p>
+    </div>
+</div>
+{% endblock %}
