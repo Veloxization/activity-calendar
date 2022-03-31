@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<h1>Activity Calendar</h1>
+{% if session.username %}
+<h2>Welcome, {{ session.username }}!</h2>
+<a class="home-page-button">Activities</a>
+<a class="home-page-button">Inbox</a>
+{% else %}
+<a class="home-page-button">Log In</a>
+<a class="home-page-button">Sign Up</a>
+{% endif %}
+{% endblock %}
