@@ -4,10 +4,10 @@
 <h1>Activity Calendar</h1>
 {% if session.username %}
 <h2>Welcome, {{ session.username }}!</h2>
-<a class="home-page-button">Activities</a>
-<a class="home-page-button">Inbox</a>
+<a class="home-page-button" href="/activities/{{ session.username }}">Activities</a>
+<a class="home-page-button" href="/inbox/{{ session.username }}">Inbox</a>
 {% else %}
-<a class="home-page-button">Log In</a>
-<a class="home-page-button">Sign Up</a>
+<a class="home-page-button" href="/login">Log In</a>
+<a class="home-page-button" href="/signup">Sign Up</a>
 {% endif %}
 {% endblock %}
