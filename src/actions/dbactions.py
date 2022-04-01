@@ -33,3 +33,16 @@ class DBActions:
         if user:
             return check_password_hash(user.password, password)
         return False
+
+    def change_user_group(self, username, group_id):
+        sql = "UPDATE users SET group_id=:group_id WHERE username=:username"
+        result = self.db.session.execute(sql, {"group_id": group_id, "username": username})
+        self.db.session.commit()
+
+    def create_group(self, group_name):
+        sql = "INSERT INTO groups (group_name) VALUES (:group_name)"
+        result = self.db.session.execute(sql, {"group_name": group_name})
+        self.db.session.commit()
+        sql = "SELECT id FROM groups WHERE group_name=:group_name"
+        result = self.db.session.execute(sql, {"group_name": group_name})
+        return result.fetchone().id

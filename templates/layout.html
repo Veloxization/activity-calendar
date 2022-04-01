@@ -9,9 +9,9 @@
             <div id="nav-menu">
                 <a href="/">Home</a>
                 {% if session.username %}
-                <a href="/tasks/{{ session.username }}">Activites</a>
-                <a href="/inbox/{{ session.username }}">Inbox</a>
-                <a href="/group/{{ group_id }}">Group</a>
+                <a href="/tasks">Activites</a>
+                <a href="/inbox">Inbox</a>
+                <a href="/group">Group</a>
                 <a href="/logout">Log Out</a>
                 {% else %}
                 <a href="/login">Log In</a>

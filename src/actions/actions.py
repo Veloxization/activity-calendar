@@ -57,3 +57,9 @@ class Actions:
 
     def check_login(self, username, password):
         return self.db_action.check_credentials(username, password)
+
+    def add_user_to_group(self, username, group_id):
+        self.db_action.change_user_group(username, group_id)
+
+    def create_group(self, group_name):
+        return self.db_action.create_group(group_name)

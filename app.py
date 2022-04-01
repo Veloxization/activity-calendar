@@ -1,6 +1,5 @@
 from flask import Flask, render_template, redirect, request, session
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import check_password_hash, generate_password_hash
 from src.actions.actions import Actions
 from os import getenv
 
@@ -48,7 +47,7 @@ def createGroup():
         return render_template("404.html"), 404
     if not actions.user_can_create_group(session["username"]):
         return render_template("404.html"), 404
-    return "YAY!"
+    return render_template("creategroup.html")
 
 @app.route("/signup/post", methods=["POST"])
 def signupPost():
@@ -73,10 +72,14 @@ def signupPost():
 @app.route("/creategroup/post", methods=["POST"])
 def createGroupPost():
     group_name = request.form["group-name"]
-    username = request.args.get('username')
+    username = session["username"]
+    if not actions.user_can_create_group(username):
+        return render_template("404.html"), 404
     error = actions.check_group_name(group_name)
     if error:
         return redirect(f"/creategroup?error={error}")
+    group_id = actions.create_group(group_name)
+    actions.add_user_to_group(username, group_id)
     return redirect("/")
 
 @app.errorhandler(404)
