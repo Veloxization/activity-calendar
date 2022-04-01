@@ -11,6 +11,13 @@
             <input type="password" name="password"></p>
             <p>Password again<br/>
             <input type="password" name="password-again"></p>
+            <p>Select group
+            <select name="group">
+                <option value="new">Create new group</option>
+                {% for group in groups %}
+                <option value="{{ group.id }}"> {{ group.group_name }}
+                {% endfor %}
+            </select></p>
             <input type="submit" value="Sign Up">
         </form>
         <p>Already have an account? <a href="/login">Log In!</a></p>
