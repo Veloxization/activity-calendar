@@ -45,3 +45,12 @@ class Actions:
         if ' ' in password:
             return "password-has-forbidden-characters"
         return None
+
+    def user_can_create_group(self, username):
+        user = self.db_action.find_user(username)
+        if not user:
+            return False
+        return user.group_id is None and user.is_admin
+
+    def create_user(self, username, password, is_admin, group_id=None):
+        self.db_action.create_user(username, password, is_admin, group_id)
