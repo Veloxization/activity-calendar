@@ -1,17 +1,13 @@
-{% extends "layout.html" %}
+{% extends "loginlayout.html" %}
 {% block title %}Log In{% endblock %}
-{% block content %}
-<div id="login-box">
-    <div id="login-content">
-        <h1>Log into your Activity Calendar</h1>
-        <form action="/login/post" method="POST">
-            <p>Username<br/>
-            <input type="text" name="username"></p>
-            <p>Password<br/>
-            <input type="password" name="password"></p>
-            <input type="submit" value="Log In">
-        </form>
-        <p>No account? <a href="/signup">Sign Up!</a></p>
-    </div>
-</div>
+{% block box %}
+<h1>Log into your Activity Calendar</h1>
+<form action="/login/post" method="POST">
+    <p>Username<br/>
+    <input type="text" name="username"></p>
+    <p>Password<br/>
+    <input type="password" name="password"></p>
+    <input type="submit" value="Log In">
+</form>
+<p>No account? <a href="/signup">Sign Up!</a></p>
 {% endblock %}
