@@ -54,3 +54,6 @@ class Actions:
 
     def create_user(self, username, password, is_admin, group_id=None):
         self.db_action.create_user(username, password, is_admin, group_id)
+
+    def check_login(self, username, password):
+        return self.db_action.check_credentials(username, password)

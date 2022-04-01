@@ -25,3 +25,11 @@ class DBActions:
         sql = "INSERT INTO users (username, password, group_id, is_admin) VALUES (:username, :password, :group_id, :is_admin)"
         result = self.db.session.execute(sql, {"username": username, "password": hash_value, "group_id": group_id, "is_admin": is_admin})
         self.db.session.commit()
+
+    def check_credentials(self, username, password):
+        sql = "SELECT * FROM users WHERE username=:username"
+        result = self.db.session.execute(sql, {"username": username})
+        user = result.fetchone()
+        if user:
+            return check_password_hash(user.password, password)
+        return False

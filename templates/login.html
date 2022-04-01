@@ -2,6 +2,9 @@
 {% block title %}Log In{% endblock %}
 {% block box %}
 <h1>Log into your Activity Calendar</h1>
+{% if error %}
+<p style="color:red">Incorrect username or password!</p>
+{% endif %}
 <form action="/login/post" method="POST">
     <p>Username<br/>
     <input type="text" name="username"></p>

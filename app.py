@@ -16,7 +16,8 @@ def index():
 
 @app.route("/login")
 def login():
-    return render_template("login.html")
+    error = request.args.get('error')
+    return render_template("login.html", error=error)
 
 @app.route("/logout")
 def logout():
@@ -36,7 +37,10 @@ def signup():
 def loginPost():
     username = request.form["username"]
     password = request.form["password"]
-    return redirect("/")
+    if actions.check_login(username, password):
+        session["username"] = username
+        return redirect("/")
+    return redirect("/login?error=login-error")
 
 @app.route("/creategroup")
 def createGroup():

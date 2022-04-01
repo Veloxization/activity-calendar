@@ -3,12 +3,9 @@
 {% block box %}
 <h1>Create a new group</h1>
 <p>You're almost done! Type a desired group name below to get started.</p>
-<form action="/creategroup/post?username={{ username }}" method="POST">
-    <p>Username<br/>
-    <input type="text" name="username"></p>
-    <p>Password<br/>
-    <input type="password" name="password"></p>
-    <input type="submit" value="Log In">
+<form action="/creategroup/post" method="POST">
+    <p>Group name<br/>
+    <input type="text" name="group-name"></p>
+    <input type="submit" value="Create Group">
 </form>
-<p>No account? <a href="/signup">Sign Up!</a></p>
 {% endblock %}
