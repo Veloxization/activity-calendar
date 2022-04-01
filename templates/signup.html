@@ -4,15 +4,18 @@
 <div id="login-box">
     <div id="login-content">
         <h1>Create a new account</h1>
+        {% if error %}
+        <p style="color:red">{{ error }}!</p>
+        {% endif %}
         <form action="/signup/post" method="POST">
-            <p>Username<br/>
-            <input type="text" name="username"></p>
-            <p>Password<br/>
+            <p title="Should be 3-20 characters long and contain only alphanumeric characters.">Username<br/>
+            <input type="text" id="username" name="username"></p>
+            <p title="Should be 8-64 characters long and contain no spaces.">Password<br/>
             <input type="password" name="password"></p>
             <p>Password again<br/>
             <input type="password" name="password-again"></p>
-            <p>Select group
-            <select name="group">
+            <p>Select group<br/>
+            <select name="group" id="group">
                 <option value="new">Create new group</option>
                 {% for group in groups %}
                 <option value="{{ group.id }}"> {{ group.group_name }}
@@ -23,4 +26,5 @@
         <p>Already have an account? <a href="/login">Log In!</a></p>
     </div>
 </div>
+<script src="scripts/signupscript.js"></script>
 {% endblock %}
