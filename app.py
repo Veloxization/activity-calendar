@@ -1,11 +1,11 @@
-from flask import Flask, render_template, redirect, request, session
+from flask import Flask, render_template, redirect, request, session, abort
 from flask_sqlalchemy import SQLAlchemy
 from src.actions.actions import Actions
 from os import getenv
 
 app = Flask(__name__, static_url_path='')
 app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URI")
-app.secret_key = getenv("SECRET_KEY")
+app.secret_key = 'bc769d3abf55b0334bdec151fd2e74c7'
 db = SQLAlchemy(app)
 actions = Actions(db)
 
@@ -32,6 +32,18 @@ def signup():
         error = error.capitalize()
     return render_template("signup.html", groups=groups, error=error)
 
+@app.route("/group")
+def group():
+    if not session["username"]:
+        abort(404)
+    group = actions.get_user_group(session["username"])
+    if group is None:
+        return redirect("/creategroup")
+    member_count = len(actions.get_group_members(group))
+    admins = actions.get_group_admins(group)
+    members = actions.get_group_regular_members(group)
+    return render_template("group.html", group=group, member_count=member_count, admins=admins, members=members)
+
 @app.route("/login/post", methods=["POST"])
 def loginPost():
     username = request.form["username"]
@@ -44,9 +56,9 @@ def loginPost():
 @app.route("/creategroup")
 def createGroup():
     if not session["username"]:
-        return render_template("404.html"), 404
+        abort(404)
     if not actions.user_can_create_group(session["username"]):
-        return render_template("404.html"), 404
+        abort(404)
     return render_template("creategroup.html")
 
 @app.route("/signup/post", methods=["POST"])
@@ -74,7 +86,7 @@ def createGroupPost():
     group_name = request.form["group-name"]
     username = session["username"]
     if not actions.user_can_create_group(username):
-        return render_template("404.html"), 404
+        abort(404)
     error = actions.check_group_name(group_name)
     if error:
         return redirect(f"/creategroup?error={error}")
@@ -85,3 +97,7 @@ def createGroupPost():
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("404.html"), 404
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template("500.html", error=e.description), 500

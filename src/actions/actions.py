@@ -63,3 +63,15 @@ class Actions:
 
     def create_group(self, group_name):
         return self.db_action.create_group(group_name)
+
+    def get_user_group(self, username):
+        return self.db_action.get_user_group(username)
+
+    def get_group_admins(self, group_id):
+        return self.db_action.get_group_admins(group_id)
+
+    def get_group_regular_members(self, group_id):
+        return self.db_action.get_group_regular_members(group_id)
+
+    def get_group_members(self, group_id):
+        return self.db_action.get_group_members(group_id)

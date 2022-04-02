@@ -9,10 +9,11 @@
             <div id="nav-menu">
                 <a href="/">Home</a>
                 {% if session.username %}
-                <a href="/tasks">Activites</a>
+                <a href="/activities">Activites</a>
                 <a href="/inbox">Inbox</a>
                 <a href="/group">Group</a>
                 <a href="/logout">Log Out</a>
+                <a href="/profile">{{ session.username }}</a>
                 {% else %}
                 <a href="/login">Log In</a>
                 <a href="/signup">Sign Up</a>

@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block title %}Group{% endblock %}
+{% block content %}
+<h1>{{ group.group_name }}</h1>
+<h2>{{ member_count }} {% if member_count < 2 %}member{% else %}members{% endif %}</h2>
+<table>
+    {% for admin in admins %}
+    <tr>
+        <td>{{ admin.username }}</td>
+        <td>Admin</td>
+        {% if admin.username != session.username %}
+        <td><a href="/message?recipient={{ admin.username }}">Message</a></td>
+        {% else %}
+        <td></td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+    {% for member in members %}
+    <tr>
+        <td>{{ member.username }}</td>
+        <td>Member</td>
+        {% if member.username != session.username %}
+        <td><a href="/message?recipient={{ member.username }}">Message</a></td>
+        {% else %}
+        <td></td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

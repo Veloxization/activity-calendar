@@ -11,7 +11,7 @@ class DBActions:
         return user
 
     def get_groups(self):
-        sql = "SELECT * FROM groups"
+        sql = "SELECT * FROM groups ORDER BY group_name ASC"
         result = self.db.session.execute(sql)
         return result.fetchall()
 
@@ -46,3 +46,24 @@ class DBActions:
         sql = "SELECT id FROM groups WHERE group_name=:group_name"
         result = self.db.session.execute(sql, {"group_name": group_name})
         return result.fetchone().id
+
+    def get_user_group(self, username):
+        user = self.find_user(username)
+        if not user:
+            return None
+        return user.group_id
+
+    def get_group_admins(self, group_id):
+        sql = "SELECT * FROM users WHERE group_id=:group_id AND is_admin ORDER BY username ASC"
+        result = self.db.session.execute(sql, {"group_id": group_id})
+        return result.fetchall()
+
+    def get_group_regular_members(self, group_id):
+        sql = "SELECT * FROM users WHERE group_id=:group_id AND is_admin='no' ORDER BY username ASC"
+        result = self.db.session.execute(sql, {"group_id": group_id})
+        return result.fetchall()
+
+    def get_group_members(self, group_id):
+        sql = "SELECT * FROM users WHERE group_id=:group_id ORDER BY username ASC"
+        result = self.db.session.execute(sql, {"group_id": group_id})
+        return result.fetchall()
