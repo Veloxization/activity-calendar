@@ -8,6 +8,9 @@ class Actions:
         user = self.db_action.find_user(username)
         return user is not None
 
+    def find_user(self, username):
+        return self.db_action.find_user(username)
+
     def get_groups(self):
         return self.db_action.get_groups()
 
@@ -46,6 +49,13 @@ class Actions:
             return "password-has-forbidden-characters"
         return None
 
+    def check_activity_name(self, activity_name):
+        if len(activity_name) < 1:
+            return "name-too-shirt"
+        if len(activity_name) > 1000:
+            return "name-too-long"
+        return None
+
     def user_can_create_group(self, username):
         user = self.db_action.find_user(username)
         if not user:
@@ -63,6 +73,9 @@ class Actions:
 
     def create_group(self, group_name):
         return self.db_action.create_group(group_name)
+
+    def create_activity(self, activity_name, group_id, is_approved=False):
+        self.db_action.create_activity(activity_name, group_id, is_approved)
 
     def get_user_group(self, username):
         return self.db_action.get_user_group(username)
@@ -83,4 +96,10 @@ class Actions:
         return self.db_action.get_activity(activity_id)
 
     def get_group_activities(self, group_id):
-        return self. db_action.get_group_activities(group_id)
+        return self.db_action.get_group_activities(group_id)
+
+    def is_admin(self, username):
+        user = self.db_action.find_user(username)
+        if not user:
+            return False
+        return user.is_admin

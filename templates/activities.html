@@ -12,18 +12,29 @@
 <table>
     {% for activity in activities %}
     <tr>
-        <td>{{ activity.activity }}</td>
-        {% if active %}
-        {% if active.id == activity.id %}
-        <td><a href="/activities/stop?activity={{ activity.id }}">Stop this activity</a></td>
-        {% else %}
-        <td><a href="/activities/stop?activity={{ active.id }}&start={{ activity.id }}">Stop current and start this activity</a></td>
-        {% endif %}
-        {% else %}
-        <td><a href="/activities/start?activity={{ activity.id }}">Start this activity</a></td>
-        {% endif %}
+        <td><b>{{ activity.activity }}</b></td>
+        <td>
+            {% if activity.is_approved %}
+            <p style="color:green">Official Activity</p>
+            {% else %}
+            <p style="color:orange">Pending approval</p>
+            {% endif %}
+        </td>
+        <td>
+            {% if active %}
+            {% if active.id == activity.id %}
+            <a href="/activities/stop?activity={{ activity.id }}">Stop this activity</a>
+            {% else %}
+            <a href="/activities/stop?activity={{ active.id }}&start={{ activity.id }}">Stop current and start this activity</a>
+            {% endif %}
+            {% else %}
+            <a href="/activities/start?activity={{ activity.id }}">Start this activity</a>
+            {% endif %}
+        </td>
     </tr>
     {% endfor %}
 </table>
+<hr/>
+<a href="/activities/create">Create a new activity</a>
 {% endif %}
 {% endblock %}

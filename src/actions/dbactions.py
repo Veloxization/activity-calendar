@@ -5,7 +5,7 @@ class DBActions:
         self.db = database
 
     def find_user(self, username):
-        sql = "SELECT * FROM users WHERE username=:username"
+        sql = "SELECT * FROM users WHERE LOWER(username)=LOWER(:username)"
         result = self.db.session.execute(sql, {"username": username})
         user = result.fetchone()
         return user
@@ -16,7 +16,7 @@ class DBActions:
         return result.fetchall()
 
     def find_group(self, group_name):
-        sql = "SELECT * FROM groups WHERE group_name=:group_name"
+        sql = "SELECT * FROM groups WHERE LOWER(group_name)=LOWER(:group_name)"
         result = self.db.session.execute(sql, {"group_name": group_name})
         return result.fetchone()
     
@@ -46,6 +46,11 @@ class DBActions:
         sql = "SELECT id FROM groups WHERE group_name=:group_name"
         result = self.db.session.execute(sql, {"group_name": group_name})
         return result.fetchone().id
+
+    def create_activity(self, activity_name, group_id, is_approved=False):
+        sql = "INSERT INTO activities (activity, group_id, is_approved) VALUES (:activity_name, :group_id, :is_approved)"
+        result = self.db.session.execute(sql, {"activity_name": activity_name, "group_id": group_id, "is_approved": is_approved})
+        self.db.session.commit()
 
     def get_user_group(self, username):
         user = self.find_user(username)

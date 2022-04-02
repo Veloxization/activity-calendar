@@ -38,19 +38,23 @@ def group():
         abort(404)
     group = actions.get_user_group(session["username"])
     if group is None:
-        return redirect("/creategroup")
+        return redirect("/group/create")
     member_count = len(actions.get_group_members(group.id))
     admins = actions.get_group_admins(group.id)
     members = actions.get_group_regular_members(group.id)
     return render_template("group.html", group=group, member_count=member_count, admins=admins, members=members)
 
-@app.route("/creategroup")
-def createGroup():
+@app.route("/group/create")
+def create_group():
     if not session["username"]:
         abort(404)
     if not actions.user_can_create_group(session["username"]):
         abort(404)
-    return render_template("creategroup.html")
+    error = request.args.get('error')
+    if error:
+        error = error.replace("-", " ")
+        error = error.capitalize()
+    return render_template("creategroup.html", error=error)
 
 @app.route("/activities")
 def activities():
@@ -62,11 +66,20 @@ def activities():
     else:
         active = None
     group = actions.get_user_group(session["username"])
+    if not group:
+        return redirect("/group/create")
     activities = actions.get_group_activities(group.id)
     return render_template("activities.html", active=active, user_activity=user_activity, activity_count=len(activities), activities=activities)
 
+@app.route("/activities/create")
+def create_activity():
+    if not session["username"]:
+        abort(404)
+    error = request.args.get('error')
+    return render_template("createactivity.html", error=error)
+
 @app.route("/login/post", methods=["POST"])
-def loginPost():
+def login_post():
     username = request.form["username"]
     password = request.form["password"]
     if actions.check_login(username, password):
@@ -75,7 +88,7 @@ def loginPost():
     return redirect("/login?error=login-error")
 
 @app.route("/signup/post", methods=["POST"])
-def signupPost():
+def signup_post():
     username = request.form["username"]
     password = request.form["password"]
     password_again = request.form["password-again"]
@@ -90,22 +103,37 @@ def signupPost():
     session["username"] = username
     if group == "new":
         actions.create_user(username, password, True)
-        return redirect(f"/creategroup")
+        return redirect(f"/group/create")
     actions.create_user(username, password, False, int(group))
     return redirect("/")
 
-@app.route("/creategroup/post", methods=["POST"])
-def createGroupPost():
+@app.route("/group/create/post", methods=["POST"])
+def create_group_post():
     group_name = request.form["group-name"]
     username = session["username"]
     if not actions.user_can_create_group(username):
         abort(404)
     error = actions.check_group_name(group_name)
     if error:
-        return redirect(f"/creategroup?error={error}")
+        return redirect(f"/group/create?error={error}")
     group_id = actions.create_group(group_name)
     actions.add_user_to_group(username, group_id)
     return redirect("/")
+
+@app.route("/activities/create/post", methods=["POST"])
+def create_activity_post():
+    if not session["username"]:
+        abort(404)
+    activity_name = request.form["activity-name"]
+    error = actions.check_activity_name(activity_name)
+    if error:
+        return redirect(f"/activities/create?error={error}&activity={activity_name}")
+    group = actions.get_user_group(session["username"])
+    user = actions.find_user(session["username"])
+    if not group:
+        return redirect("/group/create")
+    actions.create_activity(activity_name, group.id, user.is_admin)
+    return redirect("/activities")
 
 @app.errorhandler(404)
 def page_not_found(e):

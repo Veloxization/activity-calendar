@@ -1,0 +1,14 @@
+{% extends "loginlayout.html" %}
+{% block title %}New Activity{% endblock %}
+{% block box %}
+<h1>Create a new activity</h1>
+{% if error %}
+<p style="color:red">The activity name must be between 1 and 1000 characters long!</p>
+{% endif %}
+<p>Type the desired name for the activity below.</p>
+<form action="/activities/create/post" method="POST">
+    <p title="1-1000 characters accepted">Activity name<br/>
+    <input type="text" id="activity-name" name="activity-name"></p>
+    <input type="submit" value="Create Activity">
+</form>
+{% endblock %}
