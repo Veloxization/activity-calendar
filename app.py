@@ -4,7 +4,7 @@ from src.actions.actions import Actions
 from os import getenv
 
 app = Flask(__name__, static_url_path='')
-app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URI")
+app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URL")
 app.secret_key = getenv("SECRET_KEY")
 db = SQLAlchemy(app)
 actions = Actions(db)
