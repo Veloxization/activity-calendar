@@ -36,4 +36,4 @@ Visible once logged in. Lists all the members of your group, admins and regular 
 ### Log Out
 Visible once logged in. Log out from the current account.
 ### Username
-Visible once logged in. **Currently unavailable.** Allows you to change your password or delete your account. Deleting the account that created a group will also take down the entire group, all of its activities and members. This _cannot_ be reversed.
+Visible once logged in. Allows you to change your password or delete your account. Deleting the account that created a group will also take down the entire group, all of its activities and members. This _cannot_ be reversed.
