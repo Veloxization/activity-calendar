@@ -5,7 +5,7 @@ from os import getenv
 
 app = Flask(__name__, static_url_path='')
 app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URI")
-app.secret_key = 'bc769d3abf55b0334bdec151fd2e74c7'
+app.secret_key = getenv("SECRET_KEY")
 db = SQLAlchemy(app)
 actions = Actions(db)
 
@@ -39,10 +39,31 @@ def group():
     group = actions.get_user_group(session["username"])
     if group is None:
         return redirect("/creategroup")
-    member_count = len(actions.get_group_members(group))
-    admins = actions.get_group_admins(group)
-    members = actions.get_group_regular_members(group)
+    member_count = len(actions.get_group_members(group.id))
+    admins = actions.get_group_admins(group.id)
+    members = actions.get_group_regular_members(group.id)
     return render_template("group.html", group=group, member_count=member_count, admins=admins, members=members)
+
+@app.route("/creategroup")
+def createGroup():
+    if not session["username"]:
+        abort(404)
+    if not actions.user_can_create_group(session["username"]):
+        abort(404)
+    return render_template("creategroup.html")
+
+@app.route("/activities")
+def activities():
+    if not session["username"]:
+        abort(404)
+    user_activity = actions.get_user_activity(session["username"])
+    if user_activity:
+        active = actions.get_activity(user_activity.activity_id)
+    else:
+        active = None
+    group = actions.get_user_group(session["username"])
+    activities = actions.get_group_activities(group.id)
+    return render_template("activities.html", active=active, user_activity=user_activity, activity_count=len(activities), activities=activities)
 
 @app.route("/login/post", methods=["POST"])
 def loginPost():
@@ -52,14 +73,6 @@ def loginPost():
         session["username"] = username
         return redirect("/")
     return redirect("/login?error=login-error")
-
-@app.route("/creategroup")
-def createGroup():
-    if not session["username"]:
-        abort(404)
-    if not actions.user_can_create_group(session["username"]):
-        abort(404)
-    return render_template("creategroup.html")
 
 @app.route("/signup/post", methods=["POST"])
 def signupPost():

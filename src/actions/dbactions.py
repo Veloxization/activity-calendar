@@ -51,7 +51,9 @@ class DBActions:
         user = self.find_user(username)
         if not user:
             return None
-        return user.group_id
+        sql = "SELECT * FROM groups WHERE id=:group_id"
+        result = self.db.session.execute(sql, {"group_id": user.group_id})
+        return result.fetchone()
 
     def get_group_admins(self, group_id):
         sql = "SELECT * FROM users WHERE group_id=:group_id AND is_admin ORDER BY username ASC"
@@ -65,5 +67,23 @@ class DBActions:
 
     def get_group_members(self, group_id):
         sql = "SELECT * FROM users WHERE group_id=:group_id ORDER BY username ASC"
+        result = self.db.session.execute(sql, {"group_id": group_id})
+        return result.fetchall()
+
+    def get_user_activity(self, username):
+        user = self.find_user(username)
+        if not user:
+            return None
+        sql = "SELECT * FROM user_activities WHERE user_id=:user_id AND end_time=NULL"
+        result = self.db.session.execute(sql, {"user_id": user.id})
+        return result.fetchone()
+
+    def get_activity(self, activity_id):
+        sql = "SELECT * FROM activities WHERE id=:activity_id"
+        result = self.db.session.execute(sql, {"activity_id": activity_id})
+        return result.fetchone()
+
+    def get_group_activities(self, group_id):
+        sql = "SELECT * FROM activities WHERE group_id=:group_id ORDER BY activity ASC"
         result = self.db.session.execute(sql, {"group_id": group_id})
         return result.fetchall()

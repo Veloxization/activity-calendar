@@ -75,3 +75,12 @@ class Actions:
 
     def get_group_members(self, group_id):
         return self.db_action.get_group_members(group_id)
+
+    def get_user_activity(self, username):
+        return self.db_action.get_user_activity(username)
+
+    def get_activity(self, activity_id):
+        return self.db_action.get_activity(activity_id)
+
+    def get_group_activities(self, group_id):
+        return self. db_action.get_group_activities(group_id)

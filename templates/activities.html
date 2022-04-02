@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block title %}Activities{% endblock %}
+{% block content %}
+<h1>Activities</h1>
+{% if active %}
+<p>{{ active.activity }} - Started at {{ user_activity.start_time }}</p>
+{% endif %}
+{% if activity_count < 1 %}
+<p>There are no activities here at this moment. :(</p>
+<p>You should <a href="/activities/create">create some</a>!</p>
+{% else %}
+<table>
+    {% for activity in activities %}
+    <tr>
+        <td>{{ activity.activity }}</td>
+        {% if active %}
+        {% if active.id == activity.id %}
+        <td><a href="/activities/stop?activity={{ activity.id }}">Stop this activity</a></td>
+        {% else %}
+        <td><a href="/activities/stop?activity={{ active.id }}&start={{ activity.id }}">Stop current and start this activity</a></td>
+        {% endif %}
+        {% else %}
+        <td><a href="/activities/start?activity={{ activity.id }}">Start this activity</a></td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endblock %}

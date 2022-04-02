@@ -2,7 +2,7 @@
 {% block title %}Group{% endblock %}
 {% block content %}
 <h1>{{ group.group_name }}</h1>
-<h2>{{ member_count }} {% if member_count < 2 %}member{% else %}members{% endif %}</h2>
+<h2>{{ member_count }} {% if member_count == 1 %}member{% else %}members{% endif %}</h2>
 <table>
     {% for admin in admins %}
     <tr>
