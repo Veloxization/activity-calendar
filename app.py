@@ -79,6 +79,35 @@ def create_activity():
     error = request.args.get('error')
     return render_template("createactivity.html", error=error)
 
+@app.route("/profile")
+def profile():
+    if not session["username"]:
+        abort(404)
+    success = request.args.get('success')
+    if success:
+        success = success.replace("-", " ")
+        success = success.capitalize()
+    error = request.args.get('error')
+    if error:
+        error = error.replace("-", " ")
+        error = error.capitalize()
+    return render_template("profile.html", success=success, error=error)
+
+@app.route("/profile/delete")
+def delete_profile():
+    if not session["username"]:
+        abort(404)
+    user = actions.find_user(session["username"])
+    if user.is_creator:
+        group = actions.get_user_group(session["username"])
+        actions.delete_all_activities(group.id)
+        actions.delete_all_members(group.id)
+    else:
+        actions.delete_pending_activities(user.id)
+        actions.delete_user(user.id)
+    del session["username"]
+    return redirect("/")
+
 @app.route("/login/post", methods=["POST"])
 def login_post():
     username = request.form["username"]
@@ -103,9 +132,9 @@ def signup_post():
         return redirect(f"/signup?error={password_error}&{form_input}")
     session["username"] = username
     if group == "new":
-        actions.create_user(username, password, True)
+        actions.create_user(username, password, True, True)
         return redirect(f"/group/create")
-    actions.create_user(username, password, False, int(group))
+    actions.create_user(username, password, False, False, int(group))
     return redirect("/")
 
 @app.route("/group/create/post", methods=["POST"])
@@ -135,6 +164,21 @@ def create_activity_post():
         return redirect("/group/create")
     actions.create_activity(activity_name, group.id, user.id, user.is_admin)
     return redirect("/activities")
+
+@app.route("/profile/changepassword", methods=["POST"])
+def change_password():
+    if not session["username"]:
+        abort(404)
+    current_password = request.form["current-password"]
+    new_password = request.form["new-password"]
+    new_password_again = request.form["new-password-again"]
+    error = actions.check_password(new_password, new_password_again)
+    if error:
+        return redirect(f"/profile?error={error}")
+    if actions.check_login(session["username"], current_password):
+        actions.change_password(session["username"], new_password)
+        return redirect("/profile?success=password-changed")
+    return redirect("/profile?error=incorrect-password")
 
 @app.errorhandler(404)
 def page_not_found(e):

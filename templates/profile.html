@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block title %}{{ session.username }}{% endblock %}
+{% block content %}
+<h1>{{ session.username }}'s profile</h1>
+<h2>Change password</h2>
+{% if success %}
+<p style="color:green">{{ success }}!</p>
+{% endif %}
+{% if error %}
+<p style="color:red;">{{ error }}!</p>
+{% endif %}
+<form action="/profile/changepassword" method="POST">
+    <p>Current password<br/>
+    <input type="password" name="current-password"></p>
+    <p title="Should be 8-64 characters long and contain no spaces.">New password<br/>
+    <input type="password" name="new-password"></p>
+    <p>New password again<br/>
+    <input type="password" name="new-password-again"></p>
+    <input type="submit" value="Change password">
+</form>
+<h2 style="color:red">Danger Zone</h2>
+<button onclick="deleteAccount()">Delete Account</button>
+<script src="/scripts/accountdeletion.js"></script>
+{% endblock %}

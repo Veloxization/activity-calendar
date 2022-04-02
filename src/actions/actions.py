@@ -62,14 +62,17 @@ class Actions:
             return False
         return user.group_id is None and user.is_admin
 
-    def create_user(self, username, password, is_admin, group_id=None):
-        self.db_action.create_user(username, password, is_admin, group_id)
+    def create_user(self, username, password, is_admin, is_creator, group_id=None):
+        self.db_action.create_user(username, password, is_admin, is_creator, group_id)
 
     def check_login(self, username, password):
         return self.db_action.check_credentials(username, password)
 
     def add_user_to_group(self, username, group_id):
         self.db_action.change_user_group(username, group_id)
+
+    def change_password(self, username, password):
+        self.db_action.change_password(username, password)
 
     def create_group(self, group_name):
         return self.db_action.create_group(group_name)
@@ -103,3 +106,15 @@ class Actions:
         if not user:
             return False
         return user.is_admin
+
+    def delete_user(self, user_id):
+        self.db_action.delete_user(user_id)
+
+    def delete_pending_activities(self, user_id):
+        self.db_action.delete_pending_activities(user_id)
+
+    def delete_all_activities(self, group_id):
+        self.db_action.delete_all_activities(group_id)
+
+    def delete_all_members(self, group_id):
+        self.db_action.delete_all_members(group_id)

@@ -20,10 +20,10 @@ class DBActions:
         result = self.db.session.execute(sql, {"group_name": group_name})
         return result.fetchone()
     
-    def create_user(self, username, password, is_admin, group_id):
+    def create_user(self, username, password, is_admin, is_creator, group_id):
         hash_value = generate_password_hash(password)
-        sql = "INSERT INTO users (username, password, group_id, is_admin) VALUES (:username, :password, :group_id, :is_admin)"
-        result = self.db.session.execute(sql, {"username": username, "password": hash_value, "group_id": group_id, "is_admin": is_admin})
+        sql = "INSERT INTO users (username, password, group_id, is_admin, is_creator) VALUES (:username, :password, :group_id, :is_admin, :is_creator)"
+        result = self.db.session.execute(sql, {"username": username, "password": hash_value, "group_id": group_id, "is_admin": is_admin, "is_creator": is_creator})
         self.db.session.commit()
 
     def check_credentials(self, username, password):
@@ -37,6 +37,15 @@ class DBActions:
     def change_user_group(self, username, group_id):
         sql = "UPDATE users SET group_id=:group_id WHERE username=:username"
         result = self.db.session.execute(sql, {"group_id": group_id, "username": username})
+        self.db.session.commit()
+
+    def change_password(self, username, password):
+        user = self.find_user(username)
+        if not user:
+            return
+        hash_value = generate_password_hash(password)
+        sql = "UPDATE users SET password=:password WHERE id=:user_id"
+        result = self.db.session.execute(sql, {"password": hash_value, "user_id": user.id})
         self.db.session.commit()
 
     def create_group(self, group_name):
@@ -92,3 +101,23 @@ class DBActions:
         sql = "SELECT * FROM activities WHERE group_id=:group_id ORDER BY activity ASC"
         result = self.db.session.execute(sql, {"group_id": group_id})
         return result.fetchall()
+
+    def delete_user(self, user_id):
+        sql = "DELETE FROM users WHERE id=:user_id"
+        result = self.db.session.execute(sql, {"user_id": user_id})
+        self.db.session.commit()
+
+    def delete_pending_activities(self, user_id):
+        sql = "DELETE FROM activities WHERE creator_id=:user_id"
+        result = self.db.session.execute(sql, {"user_id": user_id})
+        self.db.session.commit()
+
+    def delete_all_activities(self, group_id):
+        sql = "DELETE FROM activities WHERE group_id=:group_id"
+        result = self.db.session.execute(sql, {"group_id": group_id})
+        self.db.session.commit()
+
+    def delete_all_members(self, group_id):
+        sql = "DELETE FROM users WHERE group_id=:group_id"
+        result = self.db.session.execute(sql, {"group_id": group_id})
+        self.db.session.commit()
