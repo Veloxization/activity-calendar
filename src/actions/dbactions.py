@@ -47,9 +47,9 @@ class DBActions:
         result = self.db.session.execute(sql, {"group_name": group_name})
         return result.fetchone().id
 
-    def create_activity(self, activity_name, group_id, is_approved=False):
-        sql = "INSERT INTO activities (activity, group_id, is_approved) VALUES (:activity_name, :group_id, :is_approved)"
-        result = self.db.session.execute(sql, {"activity_name": activity_name, "group_id": group_id, "is_approved": is_approved})
+    def create_activity(self, activity_name, group_id, creator_id, is_approved=False):
+        sql = "INSERT INTO activities (activity, group_id, creator_id, is_approved) VALUES (:activity_name, :group_id, :creator_id, :is_approved)"
+        result = self.db.session.execute(sql, {"activity_name": activity_name, "group_id": group_id, "creator_id": creator_id, "is_approved": is_approved})
         self.db.session.commit()
 
     def get_user_group(self, username):

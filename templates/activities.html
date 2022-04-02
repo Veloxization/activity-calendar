@@ -10,6 +10,12 @@
 <p>You should <a href="/activities/create">create some</a>!</p>
 {% else %}
 <table>
+    <tr>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Activity control</th>
+        <th>Activity settings</th>
+    </tr>
     {% for activity in activities %}
     <tr>
         <td><b>{{ activity.activity }}</b></td>
@@ -31,6 +37,14 @@
             <a href="/activities/start?activity={{ activity.id }}">Start this activity</a>
             {% endif %}
         </td>
+        {% if user.is_admin or user.id == activity.creator_id %}
+        <td>
+            <a href="/activities/manage?activity={{ activity.id }}">Manage activity</a>
+            {% if not activity.is_approved and user.is_admin %}
+            <br/><a href="/activities/approve?activity={{ activity.id }}">Approve activity</a>
+            {% endif %}
+        </td>
+        {% endif %}
     </tr>
     {% endfor %}
 </table>

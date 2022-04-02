@@ -74,8 +74,8 @@ class Actions:
     def create_group(self, group_name):
         return self.db_action.create_group(group_name)
 
-    def create_activity(self, activity_name, group_id, is_approved=False):
-        self.db_action.create_activity(activity_name, group_id, is_approved)
+    def create_activity(self, activity_name, group_id, creator_id, is_approved=False):
+        self.db_action.create_activity(activity_name, group_id, creator_id, is_approved)
 
     def get_user_group(self, username):
         return self.db_action.get_user_group(username)

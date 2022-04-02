@@ -68,8 +68,9 @@ def activities():
     group = actions.get_user_group(session["username"])
     if not group:
         return redirect("/group/create")
+    user = actions.find_user(session["username"])
     activities = actions.get_group_activities(group.id)
-    return render_template("activities.html", active=active, user_activity=user_activity, activity_count=len(activities), activities=activities)
+    return render_template("activities.html", active=active, user_activity=user_activity, activity_count=len(activities), user=user, activities=activities)
 
 @app.route("/activities/create")
 def create_activity():
@@ -132,7 +133,7 @@ def create_activity_post():
     user = actions.find_user(session["username"])
     if not group:
         return redirect("/group/create")
-    actions.create_activity(activity_name, group.id, user.is_admin)
+    actions.create_activity(activity_name, group.id, user.id, user.is_admin)
     return redirect("/activities")
 
 @app.errorhandler(404)
