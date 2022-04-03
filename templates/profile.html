@@ -16,9 +16,10 @@
     <input type="password" name="new-password"></p>
     <p>New password again<br/>
     <input type="password" name="new-password-again"></p>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     <input type="submit" value="Change password">
 </form>
 <h2 style="color:red">Danger Zone</h2>
-<button onclick="deleteAccount()">Delete Account</button>
+<button onclick="deleteAccount({{ session.csrf_token }})">Delete Account</button>
 <script src="/scripts/accountdeletion.js"></script>
 {% endblock %}

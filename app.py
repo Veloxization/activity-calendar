@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, request, session, abort
 from flask_sqlalchemy import SQLAlchemy
 from src.actions.actions import Actions
 from os import getenv
+import secrets
 
 app = Flask(__name__, static_url_path='')
 app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URI")
@@ -21,6 +22,7 @@ def login():
 @app.route("/logout")
 def logout():
     del session["username"]
+    del session["csrf_token"]
     return redirect("/")
 
 @app.route("/signup")
@@ -35,7 +37,7 @@ def signup():
 @app.route("/group")
 def group():
     if not session["username"]:
-        abort(404)
+        abort(403)
     group = actions.get_user_group(session["username"])
     if group is None:
         return redirect("/group/create")
@@ -47,9 +49,9 @@ def group():
 @app.route("/group/create")
 def create_group():
     if not session["username"]:
-        abort(404)
+        abort(403)
     if not actions.user_can_create_group(session["username"]):
-        abort(404)
+        abort(403)
     error = request.args.get('error')
     if error:
         error = error.replace("-", " ")
@@ -59,7 +61,7 @@ def create_group():
 @app.route("/activities")
 def activities():
     if not session["username"]:
-        abort(404)
+        abort(403)
     user_activity = actions.get_user_activity(session["username"])
     if user_activity:
         active = actions.get_activity(user_activity.activity_id)
@@ -75,14 +77,14 @@ def activities():
 @app.route("/activities/create")
 def create_activity():
     if not session["username"]:
-        abort(404)
+        abort(403)
     error = request.args.get('error')
     return render_template("createactivity.html", error=error)
 
 @app.route("/profile")
 def profile():
     if not session["username"]:
-        abort(404)
+        abort(403)
     success = request.args.get('success')
     if success:
         success = success.replace("-", " ")
@@ -95,8 +97,8 @@ def profile():
 
 @app.route("/profile/delete")
 def delete_profile():
-    if not session["username"]:
-        abort(404)
+    if not session["username"] and request.args.get('token') != session["csrf_token"]:
+        abort(403)
     user = actions.find_user(session["username"])
     if user.is_creator:
         group = actions.get_user_group(session["username"])
@@ -106,6 +108,7 @@ def delete_profile():
         actions.delete_pending_activities(user.id)
         actions.delete_user(user.id)
     del session["username"]
+    del session["csrf_token"]
     return redirect("/")
 
 @app.route("/login/post", methods=["POST"])
@@ -114,6 +117,7 @@ def login_post():
     password = request.form["password"]
     if actions.check_login(username, password):
         session["username"] = username
+        session["csrf_token"] = secrets.token_hex(16)
         return redirect("/")
     return redirect("/login?error=login-error")
 
@@ -131,6 +135,7 @@ def signup_post():
     if password_error:
         return redirect(f"/signup?error={password_error}&{form_input}")
     session["username"] = username
+    session["csrf_token"] = secrets.token_hex(16)
     if group == "new":
         actions.create_user(username, password, True, True)
         return redirect(f"/group/create")
@@ -142,7 +147,7 @@ def create_group_post():
     group_name = request.form["group-name"]
     username = session["username"]
     if not actions.user_can_create_group(username):
-        abort(404)
+        abort(403)
     error = actions.check_group_name(group_name)
     if error:
         return redirect(f"/group/create?error={error}")
@@ -152,8 +157,8 @@ def create_group_post():
 
 @app.route("/activities/create/post", methods=["POST"])
 def create_activity_post():
-    if not session["username"]:
-        abort(404)
+    if not session["username"] and request.form["csrf_token"] != session["csrf_token"]:
+        abort(403)
     activity_name = request.form["activity-name"]
     error = actions.check_activity_name(activity_name)
     if error:
@@ -167,8 +172,8 @@ def create_activity_post():
 
 @app.route("/profile/changepassword", methods=["POST"])
 def change_password():
-    if not session["username"]:
-        abort(404)
+    if not session["username"] and request.form["csrf_token"] != session["csrf_token"]:
+        abort(403)
     current_password = request.form["current-password"]
     new_password = request.form["new-password"]
     new_password_again = request.form["new-password-again"]
@@ -179,6 +184,10 @@ def change_password():
         actions.change_password(session["username"], new_password)
         return redirect("/profile?success=password-changed")
     return redirect("/profile?error=incorrect-password")
+
+@app.errorhandler(403)
+def forbidden(e):
+    return render_template("403.html"), 403
 
 @app.errorhandler(404)
 def page_not_found(e):
