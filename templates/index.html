@@ -1,13 +1,17 @@
 {% extends "layout.html" %}
 {% block title %}Home{% endblock %}
 {% block content %}
-<h1>Activity Calendar</h1>
-{% if session.username %}
-<h2>Welcome, {{ session.username }}!</h2>
-<a class="home-page-button" href="/activities">Activities</a>
-<a class="home-page-button" href="/inbox">Inbox</a>
-{% else %}
-<a class="home-page-button" href="/login">Log In</a>
-<a class="home-page-button" href="/signup">Sign Up</a>
-{% endif %}
+<center>
+    <div id="home-wrapper">
+        <h1>Activity Calendar</h1>
+        {% if session.username %}
+        <h2>Welcome, {{ session.username }}!</h2>
+        <a class="home-page-button" href="/activities">Activities</a>
+        <a class="home-page-button" href="/inbox">Inbox</a>
+        {% else %}
+        <a class="home-page-button" href="/login">Log In</a>
+        <a class="home-page-button" href="/signup">Sign Up</a>
+        {% endif %}
+    </div>
+</center>
 {% endblock %}
