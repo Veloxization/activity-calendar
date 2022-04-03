@@ -20,6 +20,6 @@
     <input type="submit" value="Change password">
 </form>
 <h2 style="color:red">Danger Zone</h2>
-<button onclick="deleteAccount({{ session.csrf_token }})">Delete Account</button>
+<button onclick="deleteAccount('{{ session.csrf_token }}')">Delete Account</button>
 <script src="/scripts/accountdeletion.js"></script>
 {% endblock %}
