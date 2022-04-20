@@ -7,10 +7,11 @@
 {% endif %}
 <form action="/login/post" method="POST">
     <p>Username<br/>
-    <input type="text" name="username"></p>
+    <input type="text" name="username" id="username"></p>
     <p>Password<br/>
     <input type="password" name="password"></p>
     <input type="submit" value="Log In">
 </form>
 <p>No account? <a href="/signup">Sign Up!</a></p>
+<script src="scripts/loginscript.js"></script>
 {% endblock %}

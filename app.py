@@ -119,7 +119,7 @@ def login_post():
         session["username"] = username
         session["csrf_token"] = secrets.token_hex(16)
         return redirect("/")
-    return redirect("/login?error=login-error")
+    return redirect(f"/login?error=login-error&username={username}")
 
 @app.route("/signup/post", methods=["POST"])
 def signup_post():

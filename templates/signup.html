@@ -5,13 +5,13 @@
 {% if error %}
 <p style="color:red">{{ error }}!</p>
 {% endif %}
-<form action="/signup/post" method="POST">
-    <p title="Should be 3-20 characters long and contain only alphanumeric characters.">Username<br/>
+<form action="/signup/post" method="POST" onkeyup="checkForm()">
+    <p title="Should be 3-20 characters long and contain only alphanumeric characters.">Username <span id="username-error" style="color: red;"></span><br/>
     <input type="text" id="username" name="username"></p>
-    <p title="Should be 8-64 characters long and contain no spaces.">Password<br/>
-    <input type="password" name="password"></p>
-    <p>Password again<br/>
-    <input type="password" name="password-again"></p>
+    <p title="Should be 8-64 characters long and contain no spaces.">Password <span id="password-error" style="color: red;"></span><br/>
+    <input type="password" id="password" name="password"></p>
+    <p>Password again <span id="password-again-error" style="color: red;"></span><br/>
+    <input type="password" id="password-again" name="password-again"></p>
     <p>Select group<br/>
     <select name="group" id="group">
         <option value="new">Create new group</option>
@@ -19,7 +19,7 @@
         <option value="{{ group.id }}"> {{ group.group_name }}
         {% endfor %}
     </select></p>
-    <input type="submit" value="Sign Up">
+    <input type="submit" id="submit-button" value="Sign Up" disabled>
 </form>
 <p>Already have an account? <a href="/login">Log In!</a></p>
 <script src="scripts/signupscript.js"></script>
