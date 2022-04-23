@@ -26,7 +26,7 @@ Open the home page
 ### Log In
 If you already have an account, you can log in through here
 ### Sign Up
-If you do not have an account, one can be created here. Also prompts to assing a group for the new account. Selecting new group prompts to name the new group.
+If you do not have an account, one can be created here. Also prompts to assign a group for the new account. Selecting new group prompts to name the new group.
 ### Activities
 Visible once logged in. Lists all activities of your group. Official Activities are created or approved by admins, activities Pending approval are created by regular members but have not yet been approved by admins. The page also allows you to create new activities. **Currently you cannot mark yourself as doing activities.**
 ### Inbox
