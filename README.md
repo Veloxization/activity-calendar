@@ -20,11 +20,11 @@ The goal start times and end times for different activities for different users.
 ### Messages
 Keeps a record of internal communication within a group. Saves the sender, the recipient and the message.
 ## User interface
-The current version of the user interface can be tested [here](https://tsoha-activity-calendar.herokuapp.com/).
+The current version of the user interface can be tested [here](https://tsoha-activity-calendar.herokuapp.com/). The web app requires JavaScript to be enabled in order to function correctly.
 ### Home
 Open the home page
 ### Log In
-If you already have an account, you can log in through here
+If you already have an account, you can log in through here. The log in button remains disabled until a username and password of a valid length are entered.
 ### Sign Up
 If you do not have an account, one can be created here. Also prompts to assign a group for the new account. Selecting new group prompts to name the new group.
 ### Activities
