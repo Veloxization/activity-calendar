@@ -28,7 +28,7 @@ If you already have an account, you can log in through here. The log in button r
 ### Sign Up
 If you do not have an account, one can be created here. Also prompts to assign a group for the new account. Selecting new group prompts to name the new group.
 ### Activities
-Visible once logged in. Lists all activities of your group. Official Activities are created or approved by admins, activities Pending approval are created by regular members but have not yet been approved by admins. The page also allows you to create new activities. **Currently you cannot mark yourself as doing activities.**
+Visible once logged in. Lists all activities of your group. Official Activities are created or approved by admins, activities Pending approval are created by regular members but have not yet been approved by admins. The page also allows you to create new activities.
 ### Inbox
 Visible once logged in. **Currently unavailable.** Lists the discussions you've had with different members of your group. The page also lets you compose a new message to a member.
 ### Group
