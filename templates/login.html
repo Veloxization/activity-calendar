@@ -5,12 +5,12 @@
 {% if error %}
 <p style="color:red">Incorrect username or password!</p>
 {% endif %}
-<form action="/login/post" method="POST">
+<form action="/login/post" method="POST" onkeyup="checkForm()">
     <p>Username<br/>
     <input type="text" name="username" id="username"></p>
     <p>Password<br/>
-    <input type="password" name="password"></p>
-    <input type="submit" value="Log In">
+    <input type="password" name="password" id="password"></p>
+    <input type="submit" value="Log In" id="submit-button" disabled>
 </form>
 <p>No account? <a href="/signup">Sign Up!</a></p>
 <script src="scripts/loginscript.js"></script>
