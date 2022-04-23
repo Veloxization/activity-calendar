@@ -1,6 +1,9 @@
 from flask import Flask, render_template, redirect, request, session, abort
 from flask_sqlalchemy import SQLAlchemy
-from src.actions.actions import Actions
+from src.entitites.user import User
+from src.entitites.group import Group
+from src.entitites.activity import Activity
+from src.entitites.user_activity import UserActivity
 from os import getenv
 import secrets
 
@@ -8,7 +11,10 @@ app = Flask(__name__, static_url_path='')
 app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URI")
 app.secret_key = getenv("SECRET_KEY")
 db = SQLAlchemy(app)
-actions = Actions(db)
+user_entity = User(db)
+group_entity = Group(db)
+activity_entity = Activity(db)
+user_activity_entity = UserActivity(db)
 
 @app.route("/")
 def index():
@@ -27,7 +33,7 @@ def logout():
 
 @app.route("/signup")
 def signup():
-    groups = actions.get_groups()
+    groups = group_entity.get_groups()
     error = request.args.get('error')
     if error:
         error = error.replace("-", " ")
@@ -38,19 +44,19 @@ def signup():
 def group():
     if not session["username"]:
         abort(403)
-    group = actions.get_user_group(session["username"])
+    group = group_entity.get_user_group(session["username"])
     if group is None:
         return redirect("/group/create")
-    member_count = len(actions.get_group_members(group.id))
-    admins = actions.get_group_admins(group.id)
-    members = actions.get_group_regular_members(group.id)
+    member_count = len(user_entity.get_group_members(group.id))
+    admins = user_entity.get_group_admins(group.id)
+    members = user_entity.get_group_regular_members(group.id)
     return render_template("group.html", group=group, member_count=member_count, admins=admins, members=members)
 
 @app.route("/group/create")
 def create_group():
     if not session["username"]:
         abort(403)
-    if not actions.user_can_create_group(session["username"]):
+    if not user_entity.user_can_create_group(session["username"]):
         abort(403)
     error = request.args.get('error')
     if error:
@@ -62,16 +68,16 @@ def create_group():
 def activities():
     if not session["username"]:
         abort(403)
-    user_activity = actions.get_user_activity(session["username"])
+    user_activity = user_activity_entity.get_user_activity(session["username"])
     if user_activity:
-        active = actions.get_activity(user_activity.activity_id)
+        active = activity_entity.get_activity(user_activity.activity_id)
     else:
         active = None
-    group = actions.get_user_group(session["username"])
+    group = group_entity.get_user_group(session["username"])
     if not group:
         return redirect("/group/create")
-    user = actions.find_user(session["username"])
-    activities = actions.get_group_activities(group.id)
+    user = user_entity.find_user(session["username"])
+    activities = activity_entity.get_group_activities(group.id)
     return render_template("activities.html", active=active, user_activity=user_activity, activity_count=len(activities), user=user, activities=activities)
 
 @app.route("/activities/create")
@@ -99,14 +105,15 @@ def profile():
 def delete_profile():
     if not session["username"] and request.args.get('token') != session["csrf_token"]:
         abort(403)
-    user = actions.find_user(session["username"])
+    user = user_entity.find_user(session["username"])
     if user.is_creator:
-        group = actions.get_user_group(session["username"])
-        actions.delete_all_activities(group.id)
-        actions.delete_all_members(group.id)
+        group = group_entity.get_user_group(session["username"])
+        activity_entity.delete_all_activities(group.id)
+        user_entity.delete_all_members(group.id)
+        group_entity.delete_group(group.id)
     else:
-        actions.delete_pending_activities(user.id)
-        actions.delete_user(user.id)
+        activity_entity.delete_pending_activities(user.id)
+        user_entity.delete_user(user.id)
     del session["username"]
     del session["csrf_token"]
     return redirect("/")
@@ -115,7 +122,7 @@ def delete_profile():
 def login_post():
     username = request.form["username"]
     password = request.form["password"]
-    if actions.check_login(username, password):
+    if user_entity.check_login(username, password):
         session["username"] = username
         session["csrf_token"] = secrets.token_hex(16)
         return redirect("/")
@@ -128,31 +135,31 @@ def signup_post():
     password_again = request.form["password-again"]
     group = request.form["group"]
     form_input = f"username={username}&group={group}"
-    username_error = actions.check_username(username)
+    username_error = user_entity.check_username(username)
     if username_error:
         return redirect(f"/signup?error={username_error}&{form_input}")
-    password_error = actions.check_password(password, password_again)
+    password_error = user_entity.check_password(password, password_again)
     if password_error:
         return redirect(f"/signup?error={password_error}&{form_input}")
     session["username"] = username
     session["csrf_token"] = secrets.token_hex(16)
     if group == "new":
-        actions.create_user(username, password, True, True)
+        user_entity.create_user(username, password, True, True)
         return redirect(f"/group/create")
-    actions.create_user(username, password, False, False, int(group))
+    user_entity.create_user(username, password, False, False, int(group))
     return redirect("/")
 
 @app.route("/group/create/post", methods=["POST"])
 def create_group_post():
     group_name = request.form["group-name"]
     username = session["username"]
-    if not actions.user_can_create_group(username):
+    if not user_entity.user_can_create_group(username):
         abort(403)
-    error = actions.check_group_name(group_name)
+    error = group_entity.check_group_name(group_name)
     if error:
         return redirect(f"/group/create?error={error}")
-    group_id = actions.create_group(group_name)
-    actions.add_user_to_group(username, group_id)
+    group_id = group_entity.create_group(group_name)
+    user_entity.add_user_to_group(username, group_id)
     return redirect("/")
 
 @app.route("/activities/create/post", methods=["POST"])
@@ -160,14 +167,14 @@ def create_activity_post():
     if not session["username"] and request.form["csrf_token"] != session["csrf_token"]:
         abort(403)
     activity_name = request.form["activity-name"]
-    error = actions.check_activity_name(activity_name)
+    error = activity_entity.check_activity_name(activity_name)
     if error:
         return redirect(f"/activities/create?error={error}&activity={activity_name}")
-    group = actions.get_user_group(session["username"])
-    user = actions.find_user(session["username"])
+    group = group_entity.get_user_group(session["username"])
+    user = user_entity.find_user(session["username"])
     if not group:
         return redirect("/group/create")
-    actions.create_activity(activity_name, group.id, user.id, user.is_admin)
+    activity_entity.create_activity(activity_name, group.id, user.id, user.is_admin)
     return redirect("/activities")
 
 @app.route("/profile/changepassword", methods=["POST"])
@@ -177,11 +184,11 @@ def change_password():
     current_password = request.form["current-password"]
     new_password = request.form["new-password"]
     new_password_again = request.form["new-password-again"]
-    error = actions.check_password(new_password, new_password_again)
+    error = user_entity.check_password(new_password, new_password_again)
     if error:
         return redirect(f"/profile?error={error}")
-    if actions.check_login(session["username"], current_password):
-        actions.change_password(session["username"], new_password)
+    if user_entity.check_login(session["username"], current_password):
+        user_entity.change_password(session["username"], new_password)
         return redirect("/profile?success=password-changed")
     return redirect("/profile?error=incorrect-password")
 
