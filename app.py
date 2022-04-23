@@ -1,5 +1,6 @@
 from flask import Flask, render_template, redirect, request, session, abort
 from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import functools
 from src.entitites.user import User
 from src.entitites.group import Group
 from src.entitites.activity import Activity
@@ -87,6 +88,26 @@ def create_activity():
     error = request.args.get('error')
     return render_template("createactivity.html", error=error)
 
+@app.route("/activities/start")
+def start_activity():
+    if not session["username"] or request.args.get('token') != session["csrf_token"]:
+        abort(403)
+    user_id = user_entity.find_user(session["username"]).id
+    activity_id = int(request.args.get('activity'))
+    user_activity_entity.create_user_activity(user_id, activity_id)
+    return redirect("/activities")
+
+@app.route("/activities/stop")
+def stop_activity():
+    if not session["username"] or request.args.get('token') != session["csrf_token"]:
+        abort(403)
+    user_id = user_entity.find_user(session["username"]).id
+    user_activity_entity.end_user_activity(user_id)
+    activity_id = request.args.get('start')
+    if activity_id:
+        user_activity_entity.create_user_activity(user_id, int(activity_id))
+    return redirect("/activities")
+
 @app.route("/profile")
 def profile():
     if not session["username"]:
@@ -103,7 +124,7 @@ def profile():
 
 @app.route("/profile/delete")
 def delete_profile():
-    if not session["username"] and request.args.get('token') != session["csrf_token"]:
+    if not session["username"] or request.args.get('token') != session["csrf_token"]:
         abort(403)
     user = user_entity.find_user(session["username"])
     if user.is_creator:
@@ -164,7 +185,7 @@ def create_group_post():
 
 @app.route("/activities/create/post", methods=["POST"])
 def create_activity_post():
-    if not session["username"] and request.form["csrf_token"] != session["csrf_token"]:
+    if not session["username"] or request.form["csrf_token"] != session["csrf_token"]:
         abort(403)
     activity_name = request.form["activity-name"]
     error = activity_entity.check_activity_name(activity_name)
@@ -179,7 +200,7 @@ def create_activity_post():
 
 @app.route("/profile/changepassword", methods=["POST"])
 def change_password():
-    if not session["username"] and request.form["csrf_token"] != session["csrf_token"]:
+    if not session["username"] or request.form["csrf_token"] != session["csrf_token"]:
         abort(403)
     current_password = request.form["current-password"]
     new_password = request.form["new-password"]

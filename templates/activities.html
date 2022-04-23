@@ -29,12 +29,12 @@
         <td>
             {% if active %}
             {% if active.id == activity.id %}
-            <a href="/activities/stop?activity={{ activity.id }}">Stop this activity</a>
+            <a href="/activities/stop?token={{ session.csrf_token }}">Stop this activity</a>
             {% else %}
-            <a href="/activities/stop?activity={{ active.id }}&start={{ activity.id }}">Stop current and start this activity</a>
+            <a href="/activities/stop?start={{ activity.id }}&token={{ session.csrf_token }}">Stop current and start this activity</a>
             {% endif %}
             {% else %}
-            <a href="/activities/start?activity={{ activity.id }}">Start this activity</a>
+            <a href="/activities/start?activity={{ activity.id }}&token={{ session.csrf_token }}">Start this activity</a>
             {% endif %}
         </td>
         {% if user.is_admin or user.id == activity.creator_id %}
