@@ -95,7 +95,7 @@ a:link, a:visited {
     border-bottom: #7B6E9E 1px solid;
 }
 
-#login-box {
+#login-box, #settings-box {
     background-color: #231F2C;
     padding: 50px;
     width: 30%;
