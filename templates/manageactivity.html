@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block content %}
+<div id="settings-box">
+    <h2>Setting for {{ activity.activity }}</h2>
+    {% if not activity.is_approved %}
+    <p>Suggested by {{ suggestion_user.username }}</p>
+    {% endif %}
+    <form action="/activities/manage/post" method="POST">
+        <p>Activity name<br/>
+        {% if activity_name %}
+        <input type="text" name="activity-name" value="{{ activity_name }}"></p>
+        {% else %}
+        <input type="text" name="activity-name" value="{{ activity.activity }}"></p>
+        {% endif %}
+        <input type="submit" value="Save Changes">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        <input type="hidden" name="activity-id" value="{{ activity.id }}">
+    </form>
+    <button onclick="deletionPrompt({{ activity.id }}, '{{ session.csrf_token }}')">Delete Activity</button>
+</div>
+<script src="/scripts/manageactivity.js"></script>
+{% endblock %}

@@ -20,8 +20,14 @@ class Activity:
     def get_group_activities(self, group_id):
         return self.dao.get_group_activities(group_id)
 
+    def set_activity_name(self, activity_id, activity_name):
+        self.dao.set_activity_name(activity_id, activity_name)
+
     def delete_pending_activities(self, user_id):
         self.dao.delete_pending_activities(user_id)
 
     def delete_all_activities(self, group_id):
         self.dao.delete_all_activities(group_id)
+
+    def delete_activity(self, activity_id):
+        self.dao.delete_activity(activity_id)

@@ -38,6 +38,11 @@ class UsersDAO:
         result = self.db.session.execute(sql, {"password": hash_value, "user_id": user.id})
         self.db.session.commit()
 
+    def get_user(self, user_id):
+        sql = "SELECT * FROM users WHERE id=:user_id"
+        result = self.db.session.execute(sql, {"user_id": user_id})
+        return result.fetchone()
+
     def get_group_admins(self, group_id):
         sql = "SELECT * FROM users WHERE group_id=:group_id AND is_admin ORDER BY username ASC"
         result = self.db.session.execute(sql, {"group_id": group_id})

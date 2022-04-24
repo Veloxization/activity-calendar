@@ -1,3 +1,5 @@
+from collections import namedtuple
+
 class ActivitiesDAO:
     def __init__(self, database):
         self.db = database
@@ -10,12 +12,21 @@ class ActivitiesDAO:
     def get_activity(self, activity_id):
         sql = "SELECT * FROM activities WHERE id=:activity_id"
         result = self.db.session.execute(sql, {"activity_id": activity_id})
-        return result.fetchone()
+        activity_result = result.fetchone()
+        if not activity_result:
+            activity = namedtuple("activity", "id activity group_id creator_id is_approved")
+            activity_result = activity(-1, "Unknown Activity", -1, -1, False)
+        return activity_result
     
     def get_group_activities(self, group_id):
         sql = "SELECT * FROM activities WHERE group_id=:group_id ORDER BY activity ASC"
         result = self.db.session.execute(sql, {"group_id": group_id})
         return result.fetchall()
+
+    def set_activity_name(self, activity_id, activity_name):
+        sql = "UPDATE activities SET activity=:activity_name WHERE id=:activity_id"
+        self.db.session.execute(sql, {"activity_name": activity_name, "activity_id": activity_id})
+        self.db.session.commit()
 
     def delete_pending_activities(self, user_id):
         sql = "DELETE FROM activities WHERE creator_id=:user_id"
@@ -25,4 +36,9 @@ class ActivitiesDAO:
     def delete_all_activities(self, group_id):
         sql = "DELETE FROM activities WHERE group_id=:group_id"
         result = self.db.session.execute(sql, {"group_id": group_id})
+        self.db.session.commit()
+
+    def delete_activity(self, activity_id):
+        sql = "DELETE FROM activities WHERE id=:activity_id"
+        self.db.session.execute(sql, {"activity_id": activity_id})
         self.db.session.commit()

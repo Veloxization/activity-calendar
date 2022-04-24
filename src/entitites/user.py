@@ -51,6 +51,9 @@ class User:
     def change_password(self, username, password):
         self.dao.change_password(username, password)
 
+    def get_user(self, user_id):
+        return self.dao.get_user(user_id)
+
     def get_user_group(self, username):
         return self.dao.get_user_group(username)
 

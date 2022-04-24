@@ -108,6 +108,32 @@ def stop_activity():
         user_activity_entity.create_user_activity(user_id, int(activity_id))
     return redirect("/activities")
 
+@app.route("/activities/manage")
+def manage_activity():
+    if not session["username"]:
+        abort(403)
+    user = user_entity.find_user(session["username"])
+    activity_id = int(request.args.get('activity'))
+    activity = activity_entity.get_activity(activity_id)
+    suggestion_user = user_entity.get_user(activity.creator_id)
+    activity_name = request.args.get('activity-name')
+    if not (user.is_admin or activity.creator_id == user.id):
+        abort(403)
+    return render_template("manageactivity.html", activity=activity, activity_name=activity_name, suggestion_user=suggestion_user)
+
+@app.route("/activities/delete")
+def delete_activity():
+    if not session["username"] or request.args.get('token') != session["csrf_token"]:
+        abort(403)
+    activity_id = int(request.args.get('activity'))
+    activity = activity_entity.get_activity(activity_id)
+    user = user_entity.find_user(session["username"])
+    if not (user.is_admin or activity.creator_id == user.id):
+        abort(403)
+    user_activity_entity.clear_activity_reference(activity_id)
+    activity_entity.delete_activity(activity_id)
+    return redirect("/activities")
+
 @app.route("/profile")
 def profile():
     if not session["username"]:
@@ -127,8 +153,10 @@ def delete_profile():
     if not session["username"] or request.args.get('token') != session["csrf_token"]:
         abort(403)
     user = user_entity.find_user(session["username"])
+    user_activity_entity.delete_user_activities(user.id)
     if user.is_creator:
         group = group_entity.get_user_group(session["username"])
+        user_activity_entity.delete_group_user_activities(group.id)
         activity_entity.delete_all_activities(group.id)
         user_entity.delete_all_members(group.id)
         group_entity.delete_group(group.id)
@@ -197,6 +225,22 @@ def create_activity_post():
         return redirect("/group/create")
     activity_entity.create_activity(activity_name, group.id, user.id, user.is_admin)
     return redirect("/activities")
+
+@app.route("/activities/manage/post", methods=["POST"])
+def manage_activity_post():
+    if not session["username"] or request.form["csrf_token"] != session["csrf_token"]:
+        abort(403)
+    activity_name = request.form["activity-name"]
+    activity_id = int(request.form["activity-id"])
+    user = user_entity.find_user(session["username"])
+    activity = activity_entity.get_activity(activity_id)
+    if not (user.is_admin or user.id == activity.creator_id):
+        abort(403)
+    error = activity_entity.check_activity_name(activity_name)
+    if error:
+        return redirect(f"/activities/manage?activity={activity_id}&error={error}&activity-name={activity_name}")
+    activity_entity.set_activity_name(activity_id, activity_name)
+    return redirect(f"/activities/manage?activity={activity_id}")
 
 @app.route("/profile/changepassword", methods=["POST"])
 def change_password():
