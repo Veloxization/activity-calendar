@@ -1,5 +1,3 @@
-from src.dao.users_dao import UsersDAO
-
 class UserActivitiesDAO:
     def __init__(self, database):
         self.db = database
