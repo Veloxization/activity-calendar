@@ -4,6 +4,11 @@
 <h1>{{ group.group_name }}</h1>
 <h2>{{ member_count }} {% if member_count == 1 %}member{% else %}members{% endif %}</h2>
 <table>
+    <tr>
+        <th>Username</th>
+        <th>Type</th>
+        <th>Actions</th>
+    </tr>
     {% for admin in admins %}
     <tr>
         <td>{{ admin.username }}</td>
