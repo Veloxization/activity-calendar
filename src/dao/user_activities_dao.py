@@ -5,11 +5,8 @@ class UserActivitiesDAO:
         self.db = database
 
     def get_user_activity(self, username):
-        user = UsersDAO(self.db).find_user(username)
-        if not user:
-            return None
-        sql = "SELECT * FROM user_activities WHERE user_id=:user_id AND end_time IS NULL"
-        result = self.db.session.execute(sql, {"user_id": user.id})
+        sql = "SELECT * FROM user_activities INNER JOIN users ON user_id=users.id WHERE users.username=:username AND end_time IS NULL"
+        result = self.db.session.execute(sql, {"username": username})
         return result.fetchone()
 
     def create_user_activity(self, user_id, activity_id):

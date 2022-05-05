@@ -15,11 +15,9 @@ class GroupsDAO:
         return result.fetchone()
 
     def create_group(self, group_name):
-        sql = "INSERT INTO groups (group_name) VALUES (:group_name)"
+        sql = "INSERT INTO groups (group_name) VALUES (:group_name) RETURNING id"
         result = self.db.session.execute(sql, {"group_name": group_name})
         self.db.session.commit()
-        sql = "SELECT id FROM groups WHERE group_name=:group_name"
-        result = self.db.session.execute(sql, {"group_name": group_name})
         return result.fetchone().id
 
     def get_user_group(self, username):
