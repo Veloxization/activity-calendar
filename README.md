@@ -32,8 +32,8 @@ Visible once logged in. Lists all activities of your group. Official Activities 
 ### Inbox
 Visible once logged in. **Currently unavailable.** Lists the discussions you've had with different members of your group. The page also lets you compose a new message to a member.
 ### Group
-Visible once logged in. Lists all the members of your group, admins and regular members separately. In the future you will be able to message group members through here, view their activity history, or manage them if you're an admin.
+Visible once logged in. Lists all the members of your group, admins and regular members separately. You can also visit each member's profile to view their activity history (check the [Username section](https://github.com/Veloxization/activity-calendar#username) for more information on user profiles). In the future, you will be able to message group members through here or manage them if you're an admin.
 ### Log Out
 Visible once logged in. Log out from the current account.
 ### Username
-Visible once logged in. Allows you to change your password or delete your account. Deleting the account that created a group will also take down the entire group, all of its activities and members. This _cannot_ be reversed.
+Visible once logged in. Takes you to your own user profile. Within a user profile, you can view the user's ongoing activity (if any), their activity history, and, if you are an admin, you can also view the user's history in deleted activities. If you are the owner of the profile, you can also visit your settings page which allows you to change your password and delete your account. Deleting your account cannot be reversed and if you are the creator of a group, that group, along with its activities and members, will be permanently deleted. But don't worry, the website will show a confirmation prompt before letting you delete your account so accidental account deletions are less likely to happen.
