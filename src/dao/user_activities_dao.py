@@ -3,9 +3,19 @@ class UserActivitiesDAO:
         self.db = database
 
     def get_user_activity(self, username):
-        sql = "SELECT * FROM user_activities INNER JOIN users ON user_id=users.id WHERE users.username=:username AND end_time IS NULL"
+        sql = "SELECT * FROM user_activities INNER JOIN users ON user_id=users.id INNER JOIN activities ON activity_id=activities.id WHERE users.username=:username AND end_time IS NULL"
         result = self.db.session.execute(sql, {"username": username})
         return result.fetchone()
+
+    def get_user_activities(self, username):
+        sql = "SELECT * FROM user_activities INNER JOIN users ON user_id=users.id INNER JOIN activities ON activity_id=activities.id WHERE users.username=:username ORDER BY start_time DESC"
+        result = self.db.session.execute(sql, {"username": username})
+        return result.fetchall()
+
+    def get_deleted_user_activities(self, username):
+        sql = "SELECT * FROM user_activities INNER JOIN users ON user_id=users.id WHERE users.username=:username AND activity_id IS NULL ORDER BY start_time DESC"
+        result = self.db.session.execute(sql, {"username": username})
+        return result.fetchall()
 
     def create_user_activity(self, user_id, activity_id):
         sql = "INSERT INTO user_activities (user_id, activity_id, start_time) VALUES (:user_id, :activity_id, CURRENT_TIMESTAMP)"

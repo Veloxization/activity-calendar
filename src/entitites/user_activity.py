@@ -7,6 +7,12 @@ class UserActivity:
     def get_user_activity(self, username):
         return self.dao.get_user_activity(username)
 
+    def get_user_activities(self, username):
+        return self.dao.get_user_activities(username)
+
+    def get_deleted_user_activities(self, username):
+        return self.dao.get_deleted_user_activities(username)
+
     def create_user_activity(self, user_id, activity_id):
         self.dao.create_user_activity(user_id, activity_id)
 

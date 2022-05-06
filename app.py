@@ -138,6 +138,21 @@ def delete_activity():
 def profile():
     if not session["username"]:
         abort(403)
+    profile_user = user_entity.find_user(request.args.get('username'))
+    if not profile_user:
+        abort(404)
+    client_user = user_entity.find_user(session["username"])
+    if client_user.group_id != profile_user.group_id:
+        abort(403)
+    current_activity = user_activity_entity.get_user_activity(profile_user.username)
+    user_activities = user_activity_entity.get_user_activities(profile_user.username)
+    deleted_activities = user_activity_entity.get_deleted_user_activities(profile_user.username)
+    return render_template("profile.html", user=profile_user, current_activity=current_activity, user_activities=user_activities, client_user=client_user, deleted_activities=deleted_activities)
+
+@app.route("/profile/settings")
+def profile_settings():
+    if not session["username"]:
+        abort(403)
     success = request.args.get('success')
     if success:
         success = success.replace("-", " ")
@@ -146,7 +161,7 @@ def profile():
     if error:
         error = error.replace("-", " ")
         error = error.capitalize()
-    return render_template("profile.html", success=success, error=error)
+    return render_template("profilesettings.html", success=success, error=error)
 
 @app.route("/profile/delete")
 def delete_profile():

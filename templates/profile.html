@@ -1,25 +1,44 @@
 {% extends "layout.html" %}
-{% block title %}{{ session.username }}{% endblock %}
+{% block title %}{{ user.username }}{% endblock %}
 {% block content %}
-<h1>{{ session.username }}'s profile</h1>
-<h2>Change password</h2>
-{% if success %}
-<p style="color:green">{{ success }}!</p>
+<h1>{{ user.username }}'s profile</h1>
+{% if user.username == session.username %}
+<h2><a href="/profile/settings">Settings</a></h2>
 {% endif %}
-{% if error %}
-<p style="color:red;">{{ error }}!</p>
+<h2>Ongoing Activity</h2>
+{% if current_activity %}
+<p><b>{{ current_activity.activity }}</b></p>
+{% else %}
+<p>No ongoing activity</p>
 {% endif %}
-<form action="/profile/changepassword" method="POST">
-    <p>Current password<br/>
-    <input type="password" name="current-password"></p>
-    <p title="Should be 8-64 characters long and contain no spaces.">New password<br/>
-    <input type="password" name="new-password"></p>
-    <p>New password again<br/>
-    <input type="password" name="new-password-again"></p>
-    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-    <input type="submit" value="Change password">
-</form>
-<h2 style="color:red">Danger Zone</h2>
-<button onclick="deleteAccount('{{ session.csrf_token }}')">Delete Account</button>
-<script src="/scripts/accountdeletion.js"></script>
+<h2>Activity History</h2>
+<table>
+    <tr>
+        <th>Activity name</th>
+        <th>Start time</th>
+        <th>End time</th>
+    </tr>
+    {% for user_activity in user_activities %}
+    <tr>
+        <td>{{ user_activity.activity }}</td>
+        <td>{{ user_activity.start_time }}</td>
+        <td>{{ user_activity.end_time }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% if client_user.is_admin and deleted_activities %}
+<h2>Deleted Activity History</h2>
+<table>
+    <tr>
+        <th>Start time</th>
+        <th>End time</th>
+    </tr>
+    {% for deleted_activity in deleted_activities %}
+    <tr>
+        <td>{{ deleted_activity.start_time }}</td>
+        <td>{{ deleted_activity.end_time }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
 {% endblock %}

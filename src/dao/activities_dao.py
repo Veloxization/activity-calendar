@@ -1,5 +1,3 @@
-from collections import namedtuple
-
 class ActivitiesDAO:
     def __init__(self, database):
         self.db = database
@@ -12,11 +10,7 @@ class ActivitiesDAO:
     def get_activity(self, activity_id):
         sql = "SELECT * FROM activities WHERE id=:activity_id"
         result = self.db.session.execute(sql, {"activity_id": activity_id})
-        activity_result = result.fetchone()
-        if not activity_result:
-            activity = namedtuple("activity", "id activity group_id creator_id is_approved")
-            activity_result = activity(-1, "Unknown Activity", -1, -1, False)
-        return activity_result
+        return result.fetchone()
     
     def get_group_activities(self, group_id):
         sql = "SELECT * FROM activities WHERE group_id=:group_id ORDER BY activity ASC"
