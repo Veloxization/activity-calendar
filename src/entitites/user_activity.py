@@ -19,6 +19,9 @@ class UserActivity:
     def end_user_activity(self, user_id):
         self.dao.end_user_activity(user_id)
 
+    def end_all_activity_instances(self, activity_id):
+        self.dao.end_all_activity_instances(activity_id)
+
     def start_new_user_activity(self, user_id, activity_id):
         self.end_user_activity(user_id)
         self.start_new_user_activity(user_id, activity_id)

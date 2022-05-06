@@ -130,6 +130,7 @@ def delete_activity():
     user = user_entity.find_user(session["username"])
     if not (user.is_admin or activity.creator_id == user.id):
         abort(403)
+    user_activity_entity.end_all_activity_instances(activity_id)
     user_activity_entity.clear_activity_reference(activity_id)
     activity_entity.delete_activity(activity_id)
     return redirect("/activities")

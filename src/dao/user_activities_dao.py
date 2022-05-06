@@ -27,6 +27,11 @@ class UserActivitiesDAO:
         self.db.session.execute(sql, {"user_id": user_id})
         self.db.session.commit()
 
+    def end_all_activity_instances(self, activity_id):
+        sql = "UPDATE user_activities SET end_time=CURRENT_TIMESTAMP WHERE activity_id=:activity_id"
+        self.db.session.execute(sql, {"activity_id": activity_id})
+        self.db.session.commit()
+
     def clear_activity_reference(self, activity_id):
         sql = "UPDATE user_activities SET activity_id=NULL WHERE activity_id=:activity_id"
         self.db.session.execute(sql, {"activity_id": activity_id})
