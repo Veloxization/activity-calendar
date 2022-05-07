@@ -23,6 +23,9 @@ class Activity:
     def set_activity_name(self, activity_id, activity_name):
         self.dao.set_activity_name(activity_id, activity_name)
 
+    def approve_pending_activity(self, activity_id, group_creator_id):
+        self.dao.approve_pending_activity(activity_id, group_creator_id)
+
     def delete_pending_activities(self, user_id):
         self.dao.delete_pending_activities(user_id)
 

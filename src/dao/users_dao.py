@@ -48,6 +48,11 @@ class UsersDAO:
         result = self.db.session.execute(sql, {"group_id": group_id})
         return result.fetchall()
 
+    def get_group_creator(self, group_id):
+        sql = "SELECT * FROM users WHERE group_id=:group_id AND is_creator=TRUE"
+        result = self.db.session.execute(sql, {"group_id": group_id})
+        return result.fetchone()
+
     def get_group_regular_members(self, group_id):
         sql = "SELECT * FROM users WHERE group_id=:group_id AND is_admin='no' ORDER BY username ASC"
         result = self.db.session.execute(sql, {"group_id": group_id})

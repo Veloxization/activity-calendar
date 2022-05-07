@@ -22,6 +22,11 @@ class ActivitiesDAO:
         self.db.session.execute(sql, {"activity_name": activity_name, "activity_id": activity_id})
         self.db.session.commit()
 
+    def approve_pending_activity(self, activity_id, group_creator_id):
+        sql = "UPDATE activities SET is_approved=TRUE, creator_id=:group_creator_id WHERE id=:activity_id"
+        self.db.session.execute(sql, {"group_creator_id": group_creator_id, "activity_id": activity_id})
+        self.db.session.commit()
+
     def delete_pending_activities(self, user_id):
         sql = "DELETE FROM activities WHERE creator_id=:user_id"
         result = self.db.session.execute(sql, {"user_id": user_id})

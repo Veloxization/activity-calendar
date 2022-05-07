@@ -60,6 +60,9 @@ class User:
     def get_group_admins(self, group_id):
         return self.dao.get_group_admins(group_id)
 
+    def get_group_creator(self, group_id):
+        return self.dao.get_group_creator(group_id)
+
     def get_group_regular_members(self, group_id):
         return self.dao.get_group_regular_members(group_id)
 

@@ -41,9 +41,11 @@
         <td>
             <a href="/activities/manage?activity={{ activity.id }}">Manage activity</a>
             {% if not activity.is_approved and user.is_admin %}
-            <br/><a href="/activities/approve?activity={{ activity.id }}">Approve activity</a>
+            <br/><a href="/activities/approve?activity={{ activity.id }}&token={{ session.csrf_token }}">Approve activity</a>
             {% endif %}
         </td>
+        {% else %}
+        <td></td>
         {% endif %}
     </tr>
     {% endfor %}

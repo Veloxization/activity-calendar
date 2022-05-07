@@ -121,6 +121,18 @@ def manage_activity():
         abort(403)
     return render_template("manageactivity.html", activity=activity, activity_name=activity_name, suggestion_user=suggestion_user)
 
+@app.route("/activities/approve")
+def approve_activity():
+    if not session["username"] or request.args.get('token') != session["csrf_token"]:
+        abort(403)
+    user = user_entity.find_user(session["username"])
+    if not user.is_admin:
+        abort(403)
+    activity = activity_entity.get_activity(int(request.args.get('activity')))
+    creator = user_entity.get_group_creator(activity.group_id)
+    activity_entity.approve_pending_activity(activity.id, creator.id)
+    return redirect("/activities")
+
 @app.route("/activities/delete")
 def delete_activity():
     if not session["username"] or request.args.get('token') != session["csrf_token"]:
