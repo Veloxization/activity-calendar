@@ -3,7 +3,7 @@ class MessageThreadsDAO:
         self.db = database
 
     def get_message_thread(self, thread_id):
-        sql = "SELECT * FROM message_threads WHERE id=:thread_id"
+        sql = "SELECT message_threads.id, title FROM message_threads WHERE id=:thread_id"
         result = self.db.session.execute(sql, {"thread_id": thread_id})
         return result.fetchone()
 

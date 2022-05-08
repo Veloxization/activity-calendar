@@ -8,12 +8,12 @@ class ActivitiesDAO:
         self.db.session.commit()
 
     def get_activity(self, activity_id):
-        sql = "SELECT * FROM activities WHERE id=:activity_id"
+        sql = "SELECT activities.id, activity, group_id, creator_id, is_approved FROM activities WHERE id=:activity_id"
         result = self.db.session.execute(sql, {"activity_id": activity_id})
         return result.fetchone()
     
     def get_group_activities(self, group_id):
-        sql = "SELECT * FROM activities WHERE group_id=:group_id ORDER BY activity ASC"
+        sql = "SELECT activities.id, activity, group_id, creator_id, is_approved FROM activities WHERE group_id=:group_id ORDER BY activity ASC"
         result = self.db.session.execute(sql, {"group_id": group_id})
         return result.fetchall()
 

@@ -5,7 +5,7 @@ class UsersDAO:
         self.db = database
 
     def find_user(self, username):
-        sql = "SELECT * FROM users WHERE LOWER(username)=LOWER(:username)"
+        sql = "SELECT users.id, username, password, group_id, is_admin, is_creator FROM users WHERE LOWER(username)=LOWER(:username)"
         result = self.db.session.execute(sql, {"username": username})
         user = result.fetchone()
         return user
@@ -17,7 +17,7 @@ class UsersDAO:
         self.db.session.commit()
 
     def check_credentials(self, username, password):
-        sql = "SELECT * FROM users WHERE username=:username"
+        sql = "SELECT users.id, username, password, group_id, is_admin, is_creator FROM users WHERE username=:username"
         result = self.db.session.execute(sql, {"username": username})
         user = result.fetchone()
         if user:
@@ -39,32 +39,32 @@ class UsersDAO:
         self.db.session.commit()
 
     def get_user(self, user_id):
-        sql = "SELECT * FROM users WHERE id=:user_id"
+        sql = "SELECT users.id, username, password, group_id, is_admin, is_creator FROM users WHERE id=:user_id"
         result = self.db.session.execute(sql, {"user_id": user_id})
         return result.fetchone()
 
     def get_group_admins(self, group_id):
-        sql = "SELECT * FROM users WHERE group_id=:group_id AND is_admin ORDER BY username ASC"
+        sql = "SELECT users.id, username, password, group_id, is_admin, is_creator FROM users WHERE group_id=:group_id AND is_admin ORDER BY username ASC"
         result = self.db.session.execute(sql, {"group_id": group_id})
         return result.fetchall()
 
     def get_group_creator(self, group_id):
-        sql = "SELECT * FROM users WHERE group_id=:group_id AND is_creator=TRUE"
+        sql = "SELECT users.id, username, password, group_id, is_admin, is_creator FROM users WHERE group_id=:group_id AND is_creator=TRUE"
         result = self.db.session.execute(sql, {"group_id": group_id})
         return result.fetchone()
 
     def get_group_regular_members(self, group_id):
-        sql = "SELECT * FROM users WHERE group_id=:group_id AND is_admin='no' ORDER BY username ASC"
+        sql = "SELECT users.id, username, password, group_id, is_admin, is_creator FROM users WHERE group_id=:group_id AND is_admin='no' ORDER BY username ASC"
         result = self.db.session.execute(sql, {"group_id": group_id})
         return result.fetchall()
 
     def get_group_members(self, group_id):
-        sql = "SELECT * FROM users WHERE group_id=:group_id ORDER BY username ASC"
+        sql = "SELECT users.id, username, password, group_id, is_admin, is_creator FROM users WHERE group_id=:group_id ORDER BY username ASC"
         result = self.db.session.execute(sql, {"group_id": group_id})
         return result.fetchall()
 
     def get_group_members_except(self, group_id, user_id):
-        sql = "SELECT * FROM users WHERE group_id=:group_id AND id!=:user_id ORDER BY username ASC"
+        sql = "SELECT users.id, username, password, group_id, is_admin, is_creator FROM users WHERE group_id=:group_id AND id!=:user_id ORDER BY username ASC"
         result = self.db.session.execute(sql, {"group_id": group_id, "user_id": user_id})
         return result.fetchall()
 
