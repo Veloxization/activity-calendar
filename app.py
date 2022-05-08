@@ -266,7 +266,10 @@ def create_activity_post():
     user = user_entity.find_user(session["username"])
     if not group:
         return redirect("/group/create")
-    activity_entity.create_activity(activity_name, group.id, user.id, user.is_admin)
+    if user.is_admin:
+        activity_entity.create_activity(activity_name, group.id, user_entity.get_group_creator(group.id), True)
+    else:
+        activity_entity.create_activity(activity_name, group.id, user.id, False)
     return redirect("/activities")
 
 @app.route("/activities/manage/post", methods=["POST"])
