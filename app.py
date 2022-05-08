@@ -334,7 +334,7 @@ def manage_activity_post():
     if error:
         return redirect(f"/activities/manage?activity={activity_id}&error={error}&activity-name={activity_name}")
     activity_entity.set_activity_name(activity_id, activity_name)
-    return redirect(f"/activities/manage?activity={activity_id}")
+    return redirect(f"/activities")
 
 @app.route("/profile/changepassword", methods=["POST"])
 def change_password():
