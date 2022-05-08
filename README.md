@@ -32,7 +32,7 @@ Visible once logged in. Lists all activities of your group. Official Activities 
 ### Inbox
 Visible once logged in. **Currently unavailable.** Lists the discussions you've had with different members of your group. The page also lets you compose a new message to a member.
 ### Group
-Visible once logged in. Lists all the members of your group, admins and regular members separately. You can also visit each member's profile to view their activity history (check the [Username section](https://github.com/Veloxization/activity-calendar#username) for more information on user profiles). In the future, you will be able to message group members through here or manage them if you're an admin.
+Visible once logged in. Lists all the members of your group, admins and regular members separately. You can also visit each member's profile to view their activity history (check the [Username section](https://github.com/Veloxization/activity-calendar#username) for more information on user profiles). As the creator of a group, you are able to promote members to admin, or strip them of their admin status. As an admin, you are able to delete regular members through their management page. Deleting a member also deletes any pending activities they've submitted so be sure to approve any activities you want to keep before deleting the member who submitted them! Just click on _Manage_ under the _Actions_ column to get to these settings. In the future, you will be able to message group members through here.
 ### Log Out
 Visible once logged in. Log out from the current account.
 ### Username
