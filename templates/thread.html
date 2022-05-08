@@ -4,7 +4,7 @@
 <h1>{{ thread.title }}</h1>
 <a href="/message?thread={{ thread.id }}&recipient={{ other_user.username }}">Reply to this thread</a>
 {% for message in messages %}
-<div class="message-box{% if not message.message_read and recipient_name == session.username %} unread-message{% endif %}">
+<div class="message-box{% if not message.message_read and message.recipient_name == session.username %} unread-message{% endif %}">
     <div class="message-header">
         <p>{% if user.id == message.recipient_id %}
         From: <a href="/profile?username={{ message.sender_name }}">{{ message.sender_name }}</a>
