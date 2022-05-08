@@ -31,3 +31,9 @@ class MessagesDAO:
         sql = "INSERT INTO messages (thread_id, message_read, sender_id, recipient_id, time_sent, message) VALUES (:thread_id, FALSE, :sender_id, :recipient_id, CURRENT_TIMESTAMP, :message_content)"
         self.db.session.execute(sql, {"thread_id": thread_id, "sender_id": sender_id, "recipient_id": recipient_id, "message_content": message_content})
         self.db.session.commit()
+
+    def delete_user_messages(self, user_id):
+        sql = "DELETE FROM messages WHERE sender_id=:user_id OR recipient_id=:user_id RETURNING thread_id"
+        result = self.db.session.execute(sql, {"user_id": user_id})
+        self.db.session.commit()
+        return result.fetchall()

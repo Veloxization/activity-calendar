@@ -187,6 +187,9 @@ def delete_profile():
         abort(403)
     user = user_entity.find_user(session["username"])
     user_activity_entity.delete_user_activities(user.id)
+    threads = message_entity.delete_user_messages(user.id)
+    for thread in threads:
+        thread_entity.delete_thread(thread.thread_id)
     if user.is_creator:
         group = group_entity.get_user_group(session["username"])
         user_activity_entity.delete_group_user_activities(group.id)
@@ -362,6 +365,9 @@ def manage_profile_post():
         user_activity_entity.clear_pending_activity_references(user_id)
         user_activity_entity.delete_user_activities(user_id)
         activity_entity.delete_pending_activities(user_id)
+        threads = message_entity.delete_user_messages(user_id)
+        for thread in threads:
+            thread_entity.delete_thread(thread.thread_id)
         user_entity.delete_user(user_id)
         return redirect("/group")
     if not make_admin and client_user.is_creator:

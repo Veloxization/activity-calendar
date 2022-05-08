@@ -27,3 +27,6 @@ class Message:
 
     def create_message(self, thread_id, sender_id, recipient_id, message_content):
         self.dao.create_message(thread_id, sender_id, recipient_id, message_content)
+
+    def delete_user_messages(self, user_id):
+        return self.dao.delete_user_messages(user_id)
