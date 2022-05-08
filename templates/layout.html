@@ -5,6 +5,10 @@
         <link rel="stylesheet" type="text/css" href="/css/style.css">
     </head>
     <body>
+        <div id="wrapper">
+            <noscript><p style="color:red;">This website requires JavaScript to function correctly. Please enable it.</p></noscript>
+            {% block content %} {% endblock %}
+        </div>
         <div id="navbar">
             <div id="nav-menu">
                 <a href="/" class="nav">Home</a>
@@ -19,10 +23,6 @@
                 <a href="/signup" class="nav">Sign Up</a>
                 {% endif %}
             </div>
-        </div>
-        <div id="wrapper">
-            <noscript><p style="color:red;">This website requires JavaScript to function correctly. Please enable it.</p></noscript>
-            {% block content %} {% endblock %}
         </div>
         <div id="footer">
             <div id="footer-content">

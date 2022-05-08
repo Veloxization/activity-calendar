@@ -56,7 +56,9 @@ a:link, a:visited {
 #wrapper {
     margin: auto;
     margin-top: 100px;
+    margin-bottom: 100px;
     width: 70%;
+    height: 100%;
     opacity: 0;
     animation-name: fade-in;
     animation-duration: 0.5s;
@@ -149,11 +151,12 @@ a:link, a:visited {
 }
 
 #footer {
-    position: absolute;
+    position: fixed;
     left: 0;
     bottom: 0;
     width: 100%;
     border-top: #453E59 1px solid;
+    background-color: #19181B;
 }
 
 #footer-content {
