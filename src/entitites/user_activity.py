@@ -22,12 +22,18 @@ class UserActivity:
     def end_all_activity_instances(self, activity_id):
         self.dao.end_all_activity_instances(activity_id)
 
+    def end_pending_activity_instances(self, user_id):
+        self.dao.end_pending_activity_instances(user_id)
+
     def start_new_user_activity(self, user_id, activity_id):
         self.end_user_activity(user_id)
         self.start_new_user_activity(user_id, activity_id)
 
     def clear_activity_reference(self, activity_id):
         self.dao.clear_activity_reference(activity_id)
+
+    def clear_pending_activity_references(self, user_id):
+        self.dao.clear_pending_activity_references(user_id)
 
     def delete_user_activities(self, user_id):
         self.dao.delete_user_activities(user_id)

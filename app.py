@@ -51,7 +51,8 @@ def group():
     member_count = len(user_entity.get_group_members(group.id))
     admins = user_entity.get_group_admins(group.id)
     members = user_entity.get_group_regular_members(group.id)
-    return render_template("group.html", group=group, member_count=member_count, admins=admins, members=members)
+    client_user = user_entity.find_user(session["username"])
+    return render_template("group.html", group=group, member_count=member_count, admins=admins, members=members, client_user=client_user)
 
 @app.route("/group/create")
 def create_group():
@@ -189,11 +190,25 @@ def delete_profile():
         user_entity.delete_all_members(group.id)
         group_entity.delete_group(group.id)
     else:
+        user_activity_entity.end_pending_activity_instances(user.id)
+        user_activity_entity.clear_pending_activity_references(user.id)
         activity_entity.delete_pending_activities(user.id)
         user_entity.delete_user(user.id)
     del session["username"]
     del session["csrf_token"]
     return redirect("/")
+
+@app.route("/profile/manage")
+def manage_profile():
+    if not session["username"]:
+        abort(403)
+    profile_user = user_entity.find_user(request.args.get('username'))
+    if not profile_user:
+        abort(404)
+    client_user = user_entity.find_user(session["username"])
+    if profile_user.id == client_user.id or (profile_user.is_admin and not client_user.is_creator) or not client_user.is_admin:
+        abort(403)
+    return render_template("profilemanage.html", user=profile_user, client_user=client_user)
 
 @app.route("/login/post", methods=["POST"])
 def login_post():
@@ -284,6 +299,28 @@ def change_password():
         user_entity.change_password(session["username"], new_password)
         return redirect("/profile?success=password-changed")
     return redirect("/profile?error=incorrect-password")
+
+@app.route("/profile/manage/post", methods=["POST"])
+def manage_profile_post():
+    if not session["username"] or request.form["csrf_token"] != session["csrf_token"]:
+        abort(403)
+    client_user = user_entity.find_user(session["username"])
+    make_admin = request.form.get("makeadmin")
+    delete_user = request.form.get("delete")
+    user_id = int(request.form["userid"])
+    managed_user = user_entity.get_user(user_id)
+    if delete_user and ((client_user.is_admin and not managed_user.is_admin) or (client_user.is_creator and managed_user.is_admin)):
+        user_activity_entity.end_pending_activity_instances(user_id)
+        user_activity_entity.clear_pending_activity_references(user_id)
+        user_activity_entity.delete_user_activities(user_id)
+        activity_entity.delete_pending_activities(user_id)
+        user_entity.delete_user(user_id)
+        return redirect("/group")
+    if not make_admin and client_user.is_creator:
+        user_entity.make_member(user_id)
+    if make_admin and client_user.is_creator:
+        user_entity.make_admin(user_id)
+    return redirect(f"/profile/manage?username={managed_user.username}")
 
 @app.errorhandler(403)
 def forbidden(e):

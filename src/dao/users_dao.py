@@ -63,6 +63,16 @@ class UsersDAO:
         result = self.db.session.execute(sql, {"group_id": group_id})
         return result.fetchall()
 
+    def make_admin(self, user_id):
+        sql = "UPDATE users SET is_admin=TRUE WHERE id=:user_id"
+        self.db.session.execute(sql, {"user_id": user_id})
+        self.db.session.commit()
+
+    def make_member(self, user_id):
+        sql = "UPDATE users SET is_admin=FALSE WHERE id=:user_id"
+        self.db.session.execute(sql, {"user_id": user_id})
+        self.db.session.commit()
+
     def delete_user(self, user_id):
         sql = "DELETE FROM users WHERE id=:user_id"
         result = self.db.session.execute(sql, {"user_id": user_id})

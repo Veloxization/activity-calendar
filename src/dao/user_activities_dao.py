@@ -32,9 +32,19 @@ class UserActivitiesDAO:
         self.db.session.execute(sql, {"activity_id": activity_id})
         self.db.session.commit()
 
+    def end_pending_activity_instances(self, user_id):
+        sql = "UPDATE user_activities SET end_time=CURRENT_TIMESTAMP FROM activities WHERE activity_id=activities.id AND activities.creator_id=:user_id"
+        self.db.session.execute(sql, {"user_id": user_id})
+        self.db.session.commit()
+
     def clear_activity_reference(self, activity_id):
         sql = "UPDATE user_activities SET activity_id=NULL WHERE activity_id=:activity_id"
         self.db.session.execute(sql, {"activity_id": activity_id})
+        self.db.session.commit()
+
+    def clear_pending_activity_references(self, user_id):
+        sql = "UPDATE user_activities SET activity_id=NULL FROM activities WHERE activity_id=activities.id AND activities.creator_id=:user_id"
+        self.db.session.execute(sql, {"user_id": user_id})
         self.db.session.commit()
 
     def delete_user_activities(self, user_id):

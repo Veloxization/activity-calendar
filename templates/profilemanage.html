@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block content %}
+<div id="settings-box">
+    <h2>Manage {{ user.username }}</h2>
+    <form action="/profile/manage/post" method="POST">
+        {% if client_user.is_creator %}
+        <input type="checkbox" name="makeadmin"{% if user.is_admin %}checked{% endif %}>
+        <label for="makeadmin">Admin</label><br/>
+        {% endif %}
+        <input type="checkbox" name="delete">
+        <label for="delete">Permanently delete user</label>
+        <input type="hidden" name="userid" value="{{ user.id }}">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        <br/><input type="submit" value="Submit">
+    </form>
+</div>
+{% endblock %}

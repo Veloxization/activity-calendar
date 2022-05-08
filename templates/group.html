@@ -14,7 +14,12 @@
         <td><a href="/profile?username={{ admin.username }}">{{ admin.username }}</a></td>
         <td>Admin</td>
         {% if admin.username != session.username %}
-        <td><a href="/message?recipient={{ admin.username }}">Message</a></td>
+        <td>
+            <a href="/message?recipient={{ admin.username }}">Message</a>
+            {% if client_user.is_creator %}
+            <a href="/profile/manage?username={{ admin.username }}">Manage</a>
+            {% endif %}
+        </td>
         {% else %}
         <td></td>
         {% endif %}
@@ -25,7 +30,12 @@
         <td><a href="/profile?username={{ member.username }}">{{ member.username }}</a></td>
         <td>Member</td>
         {% if member.username != session.username %}
-        <td><a href="/message?recipient={{ member.username }}">Message</a></td>
+        <td>
+            <a href="/message?recipient={{ member.username }}">Message</a>
+            {% if client_user.is_admin %}
+            <a href="/profile/manage?username={{ member.username }}">Manage</a>
+            {% endif %}
+        </td>
         {% else %}
         <td></td>
         {% endif %}
