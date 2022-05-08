@@ -111,6 +111,17 @@ a:link, a:visited {
     overflow: auto;
 }
 
+#unread-notif {
+    background-color: red;
+    width: 5px;
+    height: 5px;
+    padding: 2px;
+    border: white 1px solid;
+    border-radius: 3px;
+    text-decoration: none !important;
+    color: white;
+}
+
 #login-box h1 {
     font-size: 30pt;
 }

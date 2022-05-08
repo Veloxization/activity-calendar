@@ -5,6 +5,7 @@ from src.entitites.user import User
 from src.entitites.group import Group
 from src.entitites.activity import Activity
 from src.entitites.user_activity import UserActivity
+from src.entitites.message import Message
 from os import getenv
 import secrets
 
@@ -16,6 +17,7 @@ user_entity = User(db)
 group_entity = Group(db)
 activity_entity = Activity(db)
 user_activity_entity = UserActivity(db)
+message_entity = Message(db)
 
 @app.route("/")
 def index():
@@ -209,6 +211,15 @@ def manage_profile():
     if profile_user.id == client_user.id or (profile_user.is_admin and not client_user.is_creator) or not client_user.is_admin:
         abort(403)
     return render_template("profilemanage.html", user=profile_user, client_user=client_user)
+
+@app.route("/inbox")
+def inbox():
+    if not session["username"]:
+        abort(403)
+    user = user_entity.find_user(session["username"])
+    threads = message_entity.get_user_message_threads(user.id)
+    unread = message_entity.count_unread_messages(user.id)
+    return render_template("inbox.html", threads=threads, unread=unread)
 
 @app.route("/login/post", methods=["POST"])
 def login_post():

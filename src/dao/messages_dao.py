@@ -4,23 +4,23 @@ class MessagesDAO:
 
     def get_messages_in_thread(self, thread_id):
         sql = "SELECT * FROM messages WHERE thread_id=:thread_id ORDER BY time_sent DESC"
-        self.db.session.execute(sql, {"thread_id": thread_id})
-        return self.db.session.fetchall()
+        result = self.db.session.execute(sql, {"thread_id": thread_id})
+        return result.fetchall()
 
     def get_user_message_threads(self, user_id):
-        sql = "SELECT message_threads.id, message_threads.title FROM messages INNER JOIN message_threads ON message_threads.id = thread_id WHERE sender_id=:user_id OR recipient_id=:user_id ORDER BY time_sent DESC"
-        self.db.session.execute(sql, {"user_id": user_id})
-        return self.db.session.fetchall()
+        sql = "SELECT message_threads.id, message_threads.title, time_sent, (SELECT COUNT(*) FROM messages WHERE thread_id=message_threads.id AND recipient_id=:user_id AND NOT message_read) AS unread_count FROM messages INNER JOIN message_threads ON message_threads.id = thread_id WHERE sender_id=:user_id OR recipient_id=:user_id ORDER BY time_sent DESC"
+        result = self.db.session.execute(sql, {"user_id": user_id})
+        return result.fetchall()
 
     def count_unread_messages(self, user_id):
         sql = "SELECT COUNT(*) FROM messages WHERE recipient_id=:user_id AND NOT message_read"
-        self.db.session.execute(sql, {"user_id": user_id})
-        return self.db.session.fetchone().count
+        result = self.db.session.execute(sql, {"user_id": user_id})
+        return result.fetchone().count
 
     def count_unread_messages_in_thread(self, thread_id, user_id):
         sql = "SELECT COUNT(*) FROM messages WHERE thread_id=:thread_id AND recipient_id=:user_id AND NOT message_read"
-        self.db.session.execute(sql, {"thread_id": thread_id, "user_id": user_id})
-        return self.db.session.fetchone().count
+        result = self.db.session.execute(sql, {"thread_id": thread_id, "user_id": user_id})
+        return result.fetchone().count
 
     def mark_thread_read(self, thread_id, user_id):
         sql = "UPDATE messages SET message_read=TRUE WHERE thread_id=:thread_id AND recipient_id=:user_id"

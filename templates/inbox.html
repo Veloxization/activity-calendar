@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block title %}Inbox{% endblock %}
+{% block content %}
+<h1>Inbox</h1>
+<p>You have {{ unread }} new message{% if unread != 1 %}s{% endif %}</p>
+<table>
+    <tr>
+        <th>Title</th>
+        <th>Last Message</th>
+    </tr>
+    {% for thread in threads %}
+    <tr>
+        <td><a href="/inbox/thread?id={{ thread.id }}">{{ thread.title }}{% if thread.unread_count %} <span id="unread-notif">{{ thread.unread_count }}</span>{% endif %}</a></td>
+        <td>{{ thread.time_sent }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

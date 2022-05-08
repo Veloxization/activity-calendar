@@ -4,8 +4,8 @@ class MessageThreadsDAO:
 
     def get_message_thread(self, thread_id):
         sql = "SELECT * FROM message_threads WHERE id=:thread_id"
-        self.db.session.execute(sql, {"thread_id": thread_id})
-        return self.db.session.fetchone()
+        result = self.db.session.execute(sql, {"thread_id": thread_id})
+        return result.fetchone()
 
     def create_message_thread(self, thread_name):
         sql = "INSERT INTO message_threads (title) VALUES (:thread_name)"
