@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block title %}New Message{% endblock %}
+{% block content %}
+<h1>New Message</h1>
+<form action="/message/post" method="POST" onkeyup="checkForm()">
+    <p>To<br/><select name="recipient" {% if set_recipient %}disabled{% endif %}>
+        {% if set_recipient %}
+        <option value="{{ set_recipient.id }}" selected>{{ set_recipient.username }}</option>
+        {% else %}
+        {% for recipient in recipients %}
+        <option value="{{ recipient.id }}"> {{ recipient.username }}
+        {% endfor %}
+        {% endif %}
+    </select></p>
+    <p>Title<br/><input type="text" maxlength="256" id="thread-name" name="thread-name"{% if thread_id %} value="{{ thread.title }}" disabled{% endif %}></p>
+    <p>Message<br/><textarea id="message" name="message" maxlength="5000"></textarea></p>
+    <input type="hidden" name="thread-id" value="{% if thread_id %}{{ thread_id }}{% else %}new{% endif %}">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+    {% if set_recipient %}
+    <input type="hidden" name="recipient" value="{{ set_recipient.id }}">
+    {% endif %}
+    {% if thread_id %}
+    <input type="hidden" name="thread-name" value="{{ thread.title }}">
+    {% endif %}
+    <input type="submit" id="submit-button" value="Send">
+</form>
+<script src="scripts/messagescript.js"></script>
+{% endblock %}

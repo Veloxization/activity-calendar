@@ -234,9 +234,26 @@ def thread():
         abort(404)
     if user.id != messages[0].sender_id and user.id != messages[0].recipient_id:
         abort(403)
+    if session["username"] == messages[0].sender_name:
+        other_user = user_entity.find_user(messages[0].recipient_name)
+    else:
+        other_user = user_entity.find_user(messages[0].sender_name)
     message_entity.mark_thread_read(thread_id, user.id)
     thread = thread_entity.get_message_thread(thread_id)
-    return render_template("thread.html", thread=thread, messages=messages, user=user)
+    return render_template("thread.html", thread=thread, messages=messages, user=user, other_user=other_user)
+
+@app.route("/message")
+def message():
+    if not session["username"]:
+        abort(403)
+    thread_id = request.args.get('thread')
+    if thread_id:
+        thread_id = int(thread_id)
+    set_recipient = user_entity.find_user(request.args.get('recipient'))
+    thread = thread_entity.get_message_thread(thread_id)
+    user = user_entity.find_user(session["username"])
+    recipients = user_entity.get_group_members_except(user.group_id, user.id)
+    return render_template("message.html", set_recipient=set_recipient, recipients=recipients, thread_id=thread_id, thread=thread)
 
 @app.route("/login/post", methods=["POST"])
 def login_post():
@@ -352,6 +369,24 @@ def manage_profile_post():
     if make_admin and client_user.is_creator:
         user_entity.make_admin(user_id)
     return redirect(f"/profile/manage?username={managed_user.username}")
+
+@app.route("/message/post", methods=["POST"])
+def message_post():
+    if not session["username"] or request.form["csrf_token"] != session["csrf_token"]:
+        abort(403)
+    recipient = user_entity.get_user(request.form["recipient"])
+    user = user_entity.find_user(session["username"])
+    if recipient.username == user.username or recipient.group_id != user.group_id:
+        abort(403)
+    title = request.form["thread-name"]
+    message = request.form["message"]
+    thread_id = request.form["thread-id"]
+    if thread_id == "new":
+        thread = thread_entity.create_message_thread(title)
+    else:
+        thread = thread_entity.get_message_thread(int(thread_id))
+    message_entity.create_message(thread.id, user.id, recipient.id, message)
+    return redirect(f"/inbox/thread?id={thread.id}")
 
 @app.errorhandler(403)
 def forbidden(e):

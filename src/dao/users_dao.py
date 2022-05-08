@@ -63,6 +63,11 @@ class UsersDAO:
         result = self.db.session.execute(sql, {"group_id": group_id})
         return result.fetchall()
 
+    def get_group_members_except(self, group_id, user_id):
+        sql = "SELECT * FROM users WHERE group_id=:group_id AND id!=:user_id ORDER BY username ASC"
+        result = self.db.session.execute(sql, {"group_id": group_id, "user_id": user_id})
+        return result.fetchall()
+
     def make_admin(self, user_id):
         sql = "UPDATE users SET is_admin=TRUE WHERE id=:user_id"
         self.db.session.execute(sql, {"user_id": user_id})

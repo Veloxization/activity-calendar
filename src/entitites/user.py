@@ -69,6 +69,9 @@ class User:
     def get_group_members(self, group_id):
         return self.dao.get_group_members(group_id)
 
+    def get_group_members_except(self, group_id, user_id):
+        return self.dao.get_group_members_except(group_id, user_id)
+
     def make_admin(self, user_id):
         self.dao.make_admin(user_id)
 

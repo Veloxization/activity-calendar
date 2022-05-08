@@ -8,9 +8,10 @@ class MessageThreadsDAO:
         return result.fetchone()
 
     def create_message_thread(self, thread_name):
-        sql = "INSERT INTO message_threads (title) VALUES (:thread_name)"
-        self.db.session.execute(sql, {"thread_name": thread_name})
+        sql = "INSERT INTO message_threads (title) VALUES (:thread_name) RETURNING *"
+        result = self.db.session.execute(sql, {"thread_name": thread_name})
         self.db.session.commit()
+        return result.fetchone()
 
     def delete_thread(self, thread_id):
         sql = "DELETE FROM message_threads WHERE id=:thread_id"
