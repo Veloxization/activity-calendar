@@ -38,6 +38,10 @@ a:link, a:visited {
     background-color: #231F2C;
 }
 
+.unread-message {
+    background-color: #453E59 !important;
+}
+
 .message-header {
     border-bottom: #FFF 1px solid;
     padding: 10px;
@@ -137,10 +141,6 @@ a:link, a:visited {
     border-radius: 3px;
     text-decoration: none !important;
     color: #FFF;
-}
-
-#unread-message {
-    background-color: #453E59 !important;
 }
 
 #login-box h1 {

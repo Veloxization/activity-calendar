@@ -3,7 +3,7 @@
 {% block content %}
 <h1>{{ thread.title }}</h1>
 {% for message in messages %}
-<div class="message-box"{% if not message.message_read %} id="unread-message"{% endif %}>
+<div class="message-box{% if not message.message_read %} unread-message{% endif %}">
     <div class="message-header">
         <p>{% if user.id == message.recipient_id %}
         From: <a href="/profile?username={{ message.sender_name }}">{{ message.sender_name }}</a>
