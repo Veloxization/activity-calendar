@@ -3,7 +3,7 @@
 {% block content %}
 <h1>New Message</h1>
 <form action="/message/post" method="POST" onkeyup="checkForm()">
-    <p>To<br/><select name="recipient" {% if set_recipient %}disabled{% endif %}>
+    <p>To<br/><select name="recipient" id="recipient" {% if set_recipient %}disabled{% endif %}>
         {% if set_recipient %}
         <option value="{{ set_recipient.id }}" selected>{{ set_recipient.username }}</option>
         {% else %}
@@ -22,7 +22,7 @@
     {% if thread_id %}
     <input type="hidden" name="thread-name" value="{{ thread.title }}">
     {% endif %}
-    <input type="submit" id="submit-button" value="Send">
+    <input type="submit" id="submit-button" value="Send" disabled>
 </form>
 <script src="scripts/messagescript.js"></script>
 {% endblock %}

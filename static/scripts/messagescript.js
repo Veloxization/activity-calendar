@@ -1,13 +1,16 @@
-var titleValid = False;
-var messageValid = False;
+var titleValid = false;
+var messageValid = false;
+var recipientValid = false;
 
 const titleElement = document.getElementById("thread-name");
 const messageElement = document.getElementById("message");
+const recipientElement = document.getElementById("recipient");
 const submitButton = document.getElementById("submit-button");
 
 function checkForm() {
     titleValid = checkTitle();
     messageValid = checkMessage();
+    recipientValid = checkRecipient();
     activateButton();
 }
 
@@ -21,8 +24,14 @@ function checkMessage() {
     return message.length > 0 && message.length <= 5000;
 }
 
+function checkRecipient() {
+    var recipient = recipientElement.value;
+    console.log(recipient);
+    return recipient.length > 0;
+}
+
 function activateButton() {
-    if (titleValid && messageValid) {
+    if (titleValid && messageValid && recipientValid) {
         submitButton.disabled = false;
     } else {
         submitButton.disabled = true;
