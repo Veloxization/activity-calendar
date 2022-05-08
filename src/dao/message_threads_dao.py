@@ -1,0 +1,18 @@
+class MessageThreadsDAO:
+    def __init__(self, database):
+        self.db = database
+
+    def get_message_thread(self, thread_id):
+        sql = "SELECT * FROM message_threads WHERE id=:thread_id"
+        self.db.session.execute(sql, {"thread_id": thread_id})
+        return self.db.session.fetchone()
+
+    def create_message_thread(self, thread_name):
+        sql = "INSERT INTO message_threads (title) VALUES (:thread_name)"
+        self.db.session.execute(sql, {"thread_name": thread_name})
+        self.db.session.commit()
+
+    def delete_thread(self, thread_id):
+        sql = "DELETE FROM message_threads WHERE id=:thread_id"
+        self.db.session.execute(sql, {"thread_id": thread_id})
+        self.db.session.commit()
