@@ -345,11 +345,11 @@ def change_password():
     new_password_again = request.form["new-password-again"]
     error = user_entity.check_password(new_password, new_password_again)
     if error:
-        return redirect(f"/profile?error={error}")
+        return redirect(f"/profile/settings?error={error}")
     if user_entity.check_login(session["username"], current_password):
         user_entity.change_password(session["username"], new_password)
-        return redirect("/profile?success=password-changed")
-    return redirect("/profile?error=incorrect-password")
+        return redirect("/profile/settings?success=password-changed")
+    return redirect("/profile/settings?error=incorrect-password")
 
 @app.route("/profile/manage/post", methods=["POST"])
 def manage_profile_post():
