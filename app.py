@@ -267,7 +267,7 @@ def create_activity_post():
     if not group:
         return redirect("/group/create")
     if user.is_admin:
-        activity_entity.create_activity(activity_name, group.id, user_entity.get_group_creator(group.id), True)
+        activity_entity.create_activity(activity_name, group.id, user_entity.get_group_creator(group.id).id, True)
     else:
         activity_entity.create_activity(activity_name, group.id, user.id, False)
     return redirect("/activities")
