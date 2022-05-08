@@ -28,6 +28,6 @@ class MessagesDAO:
         self.db.session.commit()
 
     def create_message(self, thread_id, sender_id, recipient_id, message_content):
-        sql = "INSERT INTO messages (thread_id, message_read, sender_id, recipient_id, time_sent, message) VALUES (:thread_id, FALSE, :sender_id, :recipient_id, CURRENT_TIMESTAMP, :message_content"
+        sql = "INSERT INTO messages (thread_id, message_read, sender_id, recipient_id, time_sent, message) VALUES (:thread_id, FALSE, :sender_id, :recipient_id, CURRENT_TIMESTAMP, :message_content)"
         self.db.session.execute(sql, {"thread_id": thread_id, "sender_id": sender_id, "recipient_id": recipient_id, "message_content": message_content})
         self.db.session.commit()
