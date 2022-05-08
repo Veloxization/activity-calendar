@@ -3,22 +3,22 @@ A project made for a university database project course. Inspired by a work time
 
 Heroku app: https://tsoha-activity-calendar.herokuapp.com/
 ## Intended use
-The Activity Calendar can be used to assign and keep track of activities, whether it's for private record keeping or for a team.
+The Activity Calendar can be used to keep track of activities, whether it's for private record keeping or for a team.
 
-For example: User is supposed to be working on a user interface from 8 AM to 12 PM, Admin assigns "Work on user interface" to the time slot 8 AM to 12 PM for User. User marks "Work on user interface" as the active activity at 8 AM and marks it as done at 12 PM.
+Example: Admin assigns different activities for a group of users to work on. One of them is titled "Work on user interface". When a user starts working on the user interface, they will mark "Work on user interface" as the current activity until they stop doing it. People within the group can look at the exact timestamps of when the user started working on the user interface and when they stopped it.
 ## Database tables
 ### Users
-Will keep a record on usernames and hashed passwords. Also shows which group a user belongs to and whether they're an admin of that group. As of now, each user is tied to a single group, so creating a new user is necessary to join multiple groups. Similarly, deleting the account used in group creation also deletes the group and all its members.
+Will keep a record on usernames and hashed passwords. Also shows which group a user belongs to and whether they're an admin or a creator of that group. Each user is tied to a single group, so creating a new user is necessary to join multiple groups.
 ### Groups
 Not assigning a user to a group will prompt the creation of a new group. Groups are used for internal communication between its members. Each group has at least a single admin user that can govern the group members. Activities are also group-specific.
 ### Activities
 Will keep a record of activities, their names, creators and the group they're attached to. Admins can add any activities they want to use and users can submit activities for admin approval.
 ### UserActivities
 Will attach an activity to a user. Also keeps track of the time when a user started an activity and the time when it was ended.
-### ActivityGoals
-The goal start times and end times for different activities for different users. Set up by group admins.
+### Message Threads
+Private message communications within a group are saved within threads. Each thread has a title that is visible within the user's inbox.
 ### Messages
-Keeps a record of internal communication within a group. Saves the sender, the recipient and the message.
+Keeps a record of internal communication within a group. Saves the sender, the recipient, the thread the message is sent in, whether the recipient has read the message, and the message itself.
 ## User interface
 The current version of the user interface can be tested [here](https://tsoha-activity-calendar.herokuapp.com/). The web app requires JavaScript to be enabled in order to function correctly.
 ### Home
