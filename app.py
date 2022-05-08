@@ -6,6 +6,7 @@ from src.entitites.group import Group
 from src.entitites.activity import Activity
 from src.entitites.user_activity import UserActivity
 from src.entitites.message import Message
+from src.entitites.message_thread import MessageThread
 from os import getenv
 import secrets
 
@@ -18,6 +19,7 @@ group_entity = Group(db)
 activity_entity = Activity(db)
 user_activity_entity = UserActivity(db)
 message_entity = Message(db)
+thread_entity = MessageThread(db)
 
 @app.route("/")
 def index():
@@ -220,6 +222,21 @@ def inbox():
     threads = message_entity.get_user_message_threads(user.id)
     unread = message_entity.count_unread_messages(user.id)
     return render_template("inbox.html", threads=threads, unread=unread)
+
+@app.route("/inbox/thread")
+def thread():
+    if not session["username"]:
+        abort(403)
+    user = user_entity.find_user(session["username"])
+    thread_id = request.args.get('id')
+    messages = message_entity.get_messages_in_thread(thread_id)
+    if not messages:
+        abort(404)
+    if user.id != messages[0].sender_id and user.id != messages[0].recipient_id:
+        abort(403)
+    message_entity.mark_thread_read(thread_id, user.id)
+    thread = thread_entity.get_message_thread(thread_id)
+    return render_template("thread.html", thread=thread, messages=messages, user=user)
 
 @app.route("/login/post", methods=["POST"])
 def login_post():

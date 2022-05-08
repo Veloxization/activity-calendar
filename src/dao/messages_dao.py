@@ -3,7 +3,7 @@ class MessagesDAO:
         self.db = database
 
     def get_messages_in_thread(self, thread_id):
-        sql = "SELECT * FROM messages WHERE thread_id=:thread_id ORDER BY time_sent DESC"
+        sql = "SELECT sender_id, recipient_id, (SELECT username FROM users WHERE users.id = messages.sender_id) AS sender_name, (SELECT username FROM users WHERE users.id = messages.recipient_id) AS recipient_name, time_sent, message_read, message FROM messages WHERE thread_id=:thread_id ORDER BY time_sent DESC"
         result = self.db.session.execute(sql, {"thread_id": thread_id})
         return result.fetchall()
 
