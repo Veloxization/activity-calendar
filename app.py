@@ -374,7 +374,7 @@ def manage_profile_post():
         user_entity.make_member(user_id)
     if make_admin and client_user.is_creator:
         user_entity.make_admin(user_id)
-    return redirect(f"/profile/manage?username={managed_user.username}")
+    return redirect(f"/group")
 
 @app.route("/message/post", methods=["POST"])
 def message_post():
